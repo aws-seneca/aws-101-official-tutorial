@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import CheckStep from "@/components/CheckStep";
 import CodeBlock from "@/components/CodeBlock";
 import { DB_STEPS, EVENT, LAUNCH_STEPS, USER_DATA } from "@/lib/content";
 
@@ -17,7 +19,7 @@ export default function Guide() {
     <>
       <p className="eyebrow">Guide</p>
       <h1>From zero to a live page</h1>
-      <p className="lede">Follow along with the presenter. If you fall behind, this page has every step.</p>
+      <p className="lede">Follow along with the presenter. Tick each step as you go; if you fall behind, this page has every step. Want a dry run first? Try the <Link href="/practice/">practice labs</Link>.</p>
 
       <h2>0 · Set your region</h2>
       <p>Top right of the AWS Console: choose <strong>{EVENT.regionLabel}</strong> (<code>{EVENT.region}</code>). If anything
@@ -33,10 +35,8 @@ export default function Guide() {
         visible: you&apos;ll see every port you open.</p>
 
       <h2>2 · Launch your server</h2>
-      <ol className="steps">
-        {LAUNCH_STEPS.map((s) => (
-          <li key={s.title}><div><h3>{s.title}</h3><p>{s.detail}</p></div></li>
-        ))}
+      <ol className="checks">
+        {LAUNCH_STEPS.map((s, i) => <CheckStep key={s.title} id={`launch-${i}`} title={s.title} detail={s.detail} />)}
       </ol>
       <h3>The user data script</h3>
       <p className="muted">Your instance runs this once, the first time it boots. It installs a web server, downloads the
@@ -50,15 +50,13 @@ export default function Guide() {
       </div>
 
       <h2>3 · Create a database (one per team)</h2>
-      <ol className="steps">
-        {DB_STEPS.map((s) => (
-          <li key={s.title}><div><h3>{s.title}</h3><p>{s.detail}</p></div></li>
-        ))}
+      <ol className="checks">
+        {DB_STEPS.map((s, i) => <CheckStep key={s.title} id={`db-${i}`} title={s.title} detail={s.detail} />)}
       </ol>
 
       <h2>4 · Challenge, then teardown</h2>
-      <p>Head to the <a href="../challenge/">challenge</a>. At minute 78 everyone tears down together: see <a href="../cost/">cost
-        and teardown</a>.</p>
+      <p>Head to the <Link href="/challenge/">challenge</Link>. At minute 78 everyone tears down together: see <Link href="/cost/">cost
+        and teardown</Link>.</p>
     </>
   );
 }

@@ -41,6 +41,7 @@ export default function Home() {
         <li>Create an AWS account and choose the <strong>free plan</strong>. A card is needed at signup; a debit card works. The free plan never charges it unless you choose to upgrade.</li>
         <li>Sign in once and make sure you can see the AWS Console.</li>
         <li>Bring a laptop. Tablets and phones won&apos;t work.</li>
+        <li>Optional, 20 minutes: do the <Link href="/practice/">practice labs</Link> so the real console feels familiar.</li>
         <li>Can&apos;t make an account? Come anyway. You&apos;ll pair with someone who has one.</li>
       </ul>
 
@@ -48,6 +49,10 @@ export default function Home() {
         <Link href="/guide/" className="card" style={{ textDecoration: "none", color: "inherit" }}>
           <h3>Step-by-step guide →</h3>
           <p className="muted">Every click, plus the script that sets up your server.</p>
+        </Link>
+        <Link href="/practice/" className="card" style={{ textDecoration: "none", color: "inherit" }}>
+          <h3>Practice labs →</h3>
+          <p className="muted">Try the launch form, security groups and a quiz in your browser. No AWS account needed.</p>
         </Link>
         <Link href="/challenge/" className="card" style={{ textDecoration: "none", color: "inherit" }}>
           <h3>Team challenge →</h3>

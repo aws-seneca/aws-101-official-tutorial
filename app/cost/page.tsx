@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CheckStep from "@/components/CheckStep";
 import { TEARDOWN } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Cost & teardown" };
@@ -29,10 +30,8 @@ export default function Cost() {
       <h2>Teardown: minute 78, everyone together</h2>
       <p>On the free plan nothing here can charge your card. But a forgotten server quietly burns the credits you&apos;d rather
         spend on your own projects.</p>
-      <ol className="steps">
-        {TEARDOWN.map((t) => (
-          <li key={t}><div><p style={{ color: "var(--ink)" }}>{t}</p></div></li>
-        ))}
+      <ol className="checks">
+        {TEARDOWN.map((t, i) => <CheckStep key={t} id={`teardown-${i}`} title={t} />)}
       </ol>
       <p className="muted">Check aws.amazon.com/free for the current rules; AWS can change them.</p>
     </>

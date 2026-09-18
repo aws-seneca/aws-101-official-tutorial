@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { IBM_Plex_Sans, JetBrains_Mono } from "next/font/google";
+import ProgressPill from "@/components/ProgressPill";
 import { EVENT, SOURCES } from "@/lib/content";
 import "./globals.css";
 
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 
 const NAV = [
   { href: "/guide/", label: "Guide" },
+  { href: "/practice/", label: "Practice" },
   { href: "/challenge/", label: "Challenge" },
   { href: "/troubleshooting/", label: "Troubleshooting" },
   { href: "/cost/", label: "Cost & teardown" },
@@ -31,6 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               {NAV.map((n) => (
                 <Link key={n.href} href={n.href}>{n.label}</Link>
               ))}
+              <ProgressPill />
             </nav>
           </div>
         </header>
