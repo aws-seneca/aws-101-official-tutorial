@@ -189,3 +189,7 @@ textarea { font-family: var(--font-mono), monospace; font-size: 13px; width: 100
 .option.wrong { background: var(--warn-soft); }
 details { margin: 8px 0 20px; }
 summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+.parts { list-style: none; padding: 0; margin: 12px 0 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; counter-reset: part; }
+.parts li { counter-increment: part; max-width: none; }
+.parts h3::before { content: "Part " counter(part) " · "; color: var(--muted); font-weight: 400; }
+section { scroll-margin-top: 16px; }

@@ -1,6 +1,3 @@
-export const REPO = "aws-seneca/aws-101-workshop";
-export const SITE_URL = `https://raw.githubusercontent.com/${REPO}/main/public/workshop-site/index.html`;
-
 export const EVENT = {
   name: "AWS 101 Workshop",
   group: "AWS Student Builder Group @ Seneca Polytechnic",
@@ -11,103 +8,61 @@ export const EVENT = {
   regionLabel: "Canada (Central)",
 };
 
-export type Phase = { from: number; to: number; name: string; short: string; tone: string };
+const RDS_GUIDE = "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide";
 
-export const PHASES: Phase[] = [
-  { from: 0, to: 10, name: "Arrival and account check", short: "Accounts", tone: "var(--p0)" },
-  { from: 10, to: 12, name: "Framing", short: "", tone: "var(--p1)" },
-  { from: 12, to: 22, name: "Five service categories", short: "Map", tone: "var(--p1)" },
-  { from: 22, to: 30, name: "Architecture decisions", short: "Design", tone: "var(--p1)" },
-  { from: 30, to: 50, name: "Guided build: EC2", short: "Build EC2", tone: "var(--p2)" },
-  { from: 50, to: 58, name: "Database setup", short: "RDS", tone: "var(--p3)" },
-  { from: 58, to: 78, name: "Team challenge", short: "Challenge", tone: "var(--p3)" },
-  { from: 78, to: 85, name: "Teardown, never cut", short: "Teardown", tone: "var(--p4)" },
-  { from: 85, to: 90, name: "Close", short: "", tone: "var(--p5)" },
+// The official AWS tutorial the workshop follows, part by part.
+export const TUTORIAL = {
+  title: "Tutorial: Create a web server and an Amazon RDS DB instance",
+  href: `${RDS_GUIDE}/TUT_WebAppWithRDS.html`,
+  parts: [
+    { title: "Launch an EC2 instance", href: `${RDS_GUIDE}/CHAP_Tutorials.WebServerDB.LaunchEC2.html`, what: "A virtual server running Amazon Linux 2023, with a security group that lets web traffic in." },
+    { title: "Create an Amazon RDS DB instance", href: `${RDS_GUIDE}/CHAP_Tutorials.WebServerDB.CreateDBInstance.html`, what: "A managed PostgreSQL database. The console wires its security group so only your server can reach it." },
+    { title: "Install a web server on your EC2 instance", href: `${RDS_GUIDE}/CHAP_Tutorials.WebServerDB.CreateWebServer.html`, what: "Apache and PHP, plus AWS's SamplePage.php: a form that saves to the database and lists what's there." },
+  ],
+};
+
+// Where the day deliberately differs from the tutorial text, and why.
+export const DIFFERENCES: { step: string; tutorial: string; today: string; why: string }[] = [
+  { step: "Region", tutorial: "Any region", today: "Canada (Central), ca-central-1", why: "Everyone in the same place, so helpers can find your resources. If something “disappears”, check the region first." },
+  { step: "Instance type", tutorial: "t2.micro", today: "t3.micro", why: "Accounts created on or after July 15, 2025 get free-plan credits for t3.micro, not t2.micro." },
+  { step: "Key pair and SSH", tutorial: "Create a key pair, SSH from My IP", today: "Proceed without a key pair. Allow SSH from anywhere (0.0.0.0/0)", why: "We connect with EC2 Instance Connect in the browser. It needs port 22 open to AWS's service, which “My IP” blocks. Fine for 90 minutes; never in production." },
+  { step: "Database engine", tutorial: "MariaDB, MySQL or PostgreSQL", today: "PostgreSQL", why: "One engine for the whole room. Follow the PostgreSQL tabs in each part." },
+  { step: "Master password", tutorial: "Any password", today: "Letters and numbers only", why: "Spaces and quotes break the PHP connection string in the sample page." },
 ];
 
-export const API_SETUP_URL = `https://raw.githubusercontent.com/${REPO}/main/public/workshop-site/api/setup.sh`;
+export type AddOn = { points: number; title: string; body: string; href?: string; link?: string };
 
-export const USER_DATA = `#!/bin/bash
-dnf install -y httpd
-curl -fsSL "${SITE_URL}" -o /var/www/html/index.html
-sed -i "s/YOUR-NAME/Your Name Here/g" /var/www/html/index.html
-systemctl enable --now httpd`;
-
-export const LAUNCH_STEPS: { title: string; detail: string }[] = [
-  { title: "EC2 → Launch instance", detail: "Check the region in the top right says Canada (Central) first." },
-  { title: "Name it", detail: "Something personal, like yourname-workshop. Thirty identical names are impossible to debug." },
-  { title: "Amazon Linux 2023", detail: "The default AMI." },
-  { title: "Instance type t3.micro", detail: "It should say free tier eligible." },
-  { title: "Proceed without a key pair", detail: "The browser connection used later doesn't need one." },
-  { title: "Allow SSH and allow HTTP from the internet", detail: "This creates a security group. These two ticks are the only reason anyone can reach your instance." },
-  { title: "Advanced details → User data", detail: "Paste the script below and change “Your Name Here”." },
-  { title: "Launch, then open the public IP", detail: "Wait for 2/2 checks passed, copy the Public IPv4 address, and open http://<that address>." },
+// Team challenge, once SamplePage.php saves data.
+export const ADD_ONS: AddOn[] = [
+  { points: 1, title: "Make the page yours", body: "Edit SamplePage.php: a real title, your team name, some CSS. Refresh and the data is still there, because it lives in RDS, not on the page." },
+  { points: 1, title: "Add a second page", body: "Create about.php (or .html) in /var/www/html and link to it from the sample page." },
+  { points: 2, title: "Read the security groups", body: "In the EC2 and RDS consoles, find the rule that lets your server reach the database on port 5432. Explain to a helper why your laptop can't connect to the database directly." },
+  { points: 2, title: "Query the database yourself", body: "From the instance, connect with psql and SELECT the rows you added through the page.", href: `${RDS_GUIDE}/USER_ConnectToPostgreSQLInstance.psql.html`, link: "Connecting with psql" },
+  { points: 2, title: "Give the instance a role", body: "Create an S3 bucket, attach an IAM role to the instance, and read a file from it with the AWS CLI, with no access keys anywhere.", href: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html", link: "IAM roles for EC2" },
 ];
 
-export const DB_STEPS: { title: string; detail: string }[] = [
-  { title: "RDS → Create database → Standard create", detail: "One person per team." },
-  { title: "Engine: PostgreSQL, template: Free tier", detail: "Single-AZ, db.t3.micro or db.t4g.micro." },
-  { title: "Identifier, username, password", detail: "Write the password down. In production it would live in Secrets Manager." },
-  { title: "Connectivity: connect to an EC2 compute resource", detail: "Pick your instance. AWS creates security groups so only your instance can reach port 5432. This is networking, not IAM." },
-  { title: "Public access: No. Create", detail: "It takes several minutes. It will be ready for the challenge." },
+export const STUCK: { symptom: string; fix: string }[] = [
+  { symptom: "My instance or database disappeared", fix: "Wrong region. Top right of the console → Canada (Central)." },
+  { symptom: "t3.micro doesn't say free tier eligible", fix: "Check the region. Older accounts (before July 2025) are on the legacy free tier; t3.micro still works and costs cents." },
+  { symptom: "The public IP won't load", fix: "Use http:// (not https://) and the Public IPv4 address. Then check the instance's security group has an HTTP rule." },
+  { symptom: "EC2 Instance Connect fails", fix: "The SSH rule is set to My IP, or the instance is still starting. Allow SSH from anywhere, wait for 2/2 checks." },
+  { symptom: "dnf can't find php-pgsql or postgresql15", fix: "The instance isn't Amazon Linux 2023. Run cat /etc/system-release; relaunch with the AL2023 AMI." },
+  { symptom: "SamplePage.php says “Failed to connect to PostgreSQL”", fix: "Check the endpoint (no port), username, password and database name “sample” in /var/www/inc/dbinfo.inc. Then check the RDS security group allows 5432 from the EC2 security group." },
+  { symptom: "The page shows PHP source code instead of running", fix: "PHP isn't installed or Apache wasn't restarted: sudo systemctl restart httpd." },
 ];
 
 export const TEARDOWN = [
-  "EC2 → Instances → select yours → Instance state → Terminate",
-  "RDS → Databases → select → Actions → Delete. Untick “create final snapshot” and “retain automated backups”, tick the acknowledgement, type delete me",
-  "If you did add-on 4: empty the S3 bucket, then delete it",
-  "Refresh both pages. Terminated or Deleting is correct",
+  "RDS → Databases → select tutorial-db-instance → Actions → Delete. Untick “Create final snapshot” and “Retain automated backups”, tick the acknowledgement, type delete me.",
+  "EC2 → Instances → select your instance → Instance state → Terminate.",
+  "If you did the role add-on: empty and delete the S3 bucket.",
+  "Refresh both pages. Deleting and Terminated mean you're done.",
 ];
 
-export type AddOn = { n: number; points: number; title: string; body: string; done: string };
-
-export const ADD_ONS: AddOn[] = [
-  { n: 1, points: 3, title: "Wire the database", body: "Deploy the small sign-up API next to Apache and point it at your RDS database, so the form on your page actually saves.", done: "You submit the form and your name shows under “Latest sign-ups”." },
-  { n: 2, points: 1, title: "Make it look good", body: "Edit the site's HTML and CSS on the server.", done: "A helper loads your page and agrees it's better." },
-  { n: 3, points: 1, title: "Add a second page", body: "An about.html, or a thanks.html the form links to.", done: "Both pages load from your public IP." },
-  { n: 4, points: 2, title: "Give the instance a role", body: "Upload a file to S3, attach an IAM role to the instance, and read the file from the instance with no keys stored on it.", done: "aws s3 cp works from the instance." },
-];
-
-export const TROUBLE: { symptom: string; cause: string; fix: string }[] = [
-  { symptom: "No account, or can't sign in", cause: "Signup unfinished, or the card was declined", fix: "Pair with a teammate now" },
-  { symptom: "“My instance disappeared”", cause: "Wrong region", fix: "Top right → Canada (Central)" },
-  { symptom: "t3.micro isn't marked free tier eligible", cause: "An older account on the legacy free tier, or the wrong region", fix: "Check the region. On older accounts it still works and costs cents" },
-  { symptom: "The page won't load", cause: "The security group has no HTTP rule", fix: "Instance → Security tab → edit inbound rules → add HTTP from anywhere" },
-  { symptom: "Still won't load, the rule looks right", cause: "Using the private IP, or the browser is forcing https://", fix: "Use the public IPv4 and type http:// explicitly" },
-  { symptom: "Apache's test page, or a blank page", cause: "Still booting, or a typo in user data", fix: "Wait two minutes. If still wrong, check user data and relaunch" },
-  { symptom: "Form says “no backend is running”", cause: "Add-on 1 not set up yet, or the API stopped", fix: "Run setup.sh, then sudo systemctl status workshop-api" },
-  { symptom: "Form says “DATABASE_URL isn't set yet”", cause: "The settings file still has the placeholder", fix: "sudo nano /etc/workshop-api.env, then sudo systemctl restart workshop-api" },
-  { symptom: "Form says “Can't reach the database”", cause: "db-sg doesn't allow 5432 from web-sg", fix: "Add that inbound rule on the database's security group" },
-  { symptom: "EC2 Instance Connect fails", cause: "No SSH rule, or the instance is still starting", fix: "Add SSH (port 22) inbound, wait for 2/2 checks" },
-  { symptom: "“Wrong database username or password”", cause: "A typo in /etc/workshop-api.env", fix: "Check the master username in the RDS configuration tab; reset the password if needed" },
-  { symptom: "aws s3 cp: unable to locate credentials", cause: "No role on the instance yet", fix: "Attach the role, wait a minute, retry" },
-];
-
-export const CHANGES: { area: string; before: string; after: string; why: string }[] = [
-  { area: "Instance type", before: "t2.micro", after: "t3.micro", why: "Accounts created on or after 2025-07-15 get free-plan credits for t3.micro, t3.small, t4g.micro, t4g.small, c7i-flex.large and m7i-flex.large. t2.micro isn't on the list." },
-  { area: "Account model", before: "“Set up a Free Tier account”", after: "“Create an account on the free plan”", why: "The twelve-month free tier became a credits model: $100 at signup, up to $100 more, and the account closes after six months or when credits run out." },
-  { area: "IAM", before: "“Without IAM, any service can talk to any other”", after: "AWS denies by default. IAM decides who can call which API", why: "The original was inverted." },
-  { area: "EC2 to RDS", before: "An IAM decision", after: "A security group decision", why: "Reaching RDS on port 5432 is network access. The console's connect-to-RDS feature works by editing security groups." },
-  { area: "Database add-on", before: "Form submissions save to the database, with no backend provided", after: "Same goal, with a ready-made 100-line API and a setup script", why: "Static HTML can't talk to a database. Shipping the backend keeps the original add-on and makes it doable in 20 minutes." },
-  { area: "Domain add-on", before: "Custom domain with Route 53", after: "IAM role reading from S3", why: "Domains cost money, DNS is slow, and the IP dies at teardown. The role add-on is free and makes IAM concrete." },
-  { area: "Teardown", before: "None", after: "Seven minutes, never cut", why: "Forgotten instances and databases burn students' credits." },
-  { area: "Setup", before: "Apache installed by hand over SSH", after: "Apache installed by user data at boot", why: "Same web server, but everyone reaches a working page. SSH moves into the challenge." },
-  { area: "Time", before: "No time for account problems", after: "Ten minutes at the start", why: "People who can't sign in are the likeliest way this event fails." },
-];
-
-export const DECISIONS: { what: string; rec: string; by: string }[] = [
-  { what: "In person or online", rec: "In person. Workshops lose the most over video", by: "Week of Sep 22" },
-  { what: "90 minutes", rec: "Yes. Cut scope, not time", by: "Now" },
-  { what: "How attendees get accounts", rec: "Personal free-plan accounts in advance, with Learner Lab or locked-down club users as fallback", by: "Sep 26" },
-  { what: "Region", rec: "ca-central-1, Canada (Central)", by: "Before the dry run" },
-  { what: "Presenter and helpers", rec: "One presenter, three helpers minimum", by: "Week of Sep 28" },
-  { what: "Prize", rec: "Something real and confirmed", by: "Oct 2" },
-];
-
-export const SOURCES = [
-  { label: "Launch an EC2 instance: free-plan instance types", href: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/LaunchingAndUsingInstances.html" },
-  { label: "Amazon RDS free tier", href: "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html" },
-  { label: "Connect an EC2 instance to an RDS database", href: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/tutorial-connect-ec2-instance-to-rds-database.html" },
-  { label: "Troubleshoot EC2 Instance Connect", href: "https://repost.aws/knowledge-center/ec2-instance-connect-troubleshooting" },
+export const LINKS = [
+  { label: TUTORIAL.title, href: TUTORIAL.href },
+  { label: "Deleting a DB instance", href: `${RDS_GUIDE}/USER_DeleteInstance.html` },
+  { label: "Terminate an EC2 instance", href: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/terminating-instances.html" },
+  { label: "Connect with EC2 Instance Connect", href: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connect-linux-inst-eic.html" },
   { label: "AWS Free Tier", href: "https://aws.amazon.com/free/" },
+  { label: "AWS Certified Cloud Practitioner", href: "https://aws.amazon.com/certification/certified-cloud-practitioner/" },
 ];

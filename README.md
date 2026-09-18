@@ -1,26 +1,19 @@
 # AWS 101 Workshop
 
-Hands-on AWS 101 workshop from the AWS Student Builder Group at Seneca Polytechnic, Wednesday, October 7, 2026.
+AWS 101 workshop from the AWS Student Builder Group at Seneca Polytechnic, Wednesday, October 7, 2026.
 
-In 90 minutes, every attendee launches a server on Amazon EC2, loads a page from it in their own browser, extends it with a team (up to connecting an RDS PostgreSQL database), and tears it all down before leaving.
+Attendees build a real web app in the AWS Console by following AWS's official tutorial, [Create a web server and an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html): an EC2 instance on Amazon Linux 2023, an RDS PostgreSQL database, and Apache with PHP serving AWS's `SamplePage.php`, which saves to the database. Teams then extend it, and everyone deletes their resources before leaving.
 
-This repo holds:
+The workshop is guided in person. This repo is the one-page companion site at https://aws-seneca.github.io/aws-101-workshop/:
 
-- **The workshop guide**, a small Next.js site: step-by-step guide, team challenge, troubleshooting, cost and teardown, and an organizers page with the runbook's open decisions.
-- **The base project** at [`public/workshop-site/index.html`](public/workshop-site/index.html). Each attendee's EC2 instance downloads this file at boot through the user data script in the guide.
+- A link to each part of the official tutorial
+- The five places the day differs from the tutorial text (region, `t3.micro` instead of `t2.micro`, EC2 Instance Connect instead of an SSH key, PostgreSQL, a simple password)
+- The team challenge
+- What to do when stuck
+- Teardown steps
+- How the AWS free plan works since July 2025
 
-## Pages
-
-| Route | What it covers |
-|---|---|
-| `/` | Overview, the 90-minute timeline, what gets built, what to do before you come |
-| `/guide/` | Region, the five service categories, launching EC2 with user data, creating an RDS database |
-| `/challenge/` | Four add-ons worth 7 points, with hints |
-| `/troubleshooting/` | What breaks, in the order it breaks |
-| `/cost/` | The free plan as it works since July 2025, and the teardown steps |
-| `/organizers/` | What changed from the first draft, open decisions, roles, the cut list |
-
-Content lives in [`lib/content.ts`](lib/content.ts), so updating a step means editing one array.
+All the text lives in [`lib/content.ts`](lib/content.ts).
 
 ## Run it locally
 
@@ -29,14 +22,11 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000.
-
 ## Deploy
 
-Pushing to `main` builds a static export and publishes it to GitHub Pages through [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). In the repo settings, set **Pages → Source** to **GitHub Actions** once.
+Pushing to `main` publishes to GitHub Pages through [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
 
 ## Before the event
 
-- Check `REPO` in `lib/content.ts` matches this repository, so the user data script downloads the right `index.html`.
-- Re-check the free plan details at https://aws.amazon.com/free/. The facts here were checked on 2026-09-18.
-- Do a full dry run on a brand-new AWS account.
+- Walk the tutorial end to end on a brand-new free-plan account, with the changes listed on the page.
+- Re-check https://aws.amazon.com/free/ and the tutorial itself. AWS updates both.

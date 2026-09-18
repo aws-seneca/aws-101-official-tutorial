@@ -1,25 +1,22 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { IBM_Plex_Sans, JetBrains_Mono } from "next/font/google";
-import ProgressPill from "@/components/ProgressPill";
-import { EVENT, SOURCES } from "@/lib/content";
+import { EVENT, LINKS } from "@/lib/content";
 import "./globals.css";
 
 const sans = IBM_Plex_Sans({ variable: "--font-sans", subsets: ["latin"], weight: ["400", "600", "700"] });
 const mono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: { default: "AWS 101 Workshop", template: "%s · AWS 101 Workshop" },
-  description: "Hands-on AWS 101 workshop from the AWS Student Builder Group at Seneca Polytechnic: launch an EC2 server, connect a database, tear it all down.",
+  title: "AWS 101 Workshop",
+  description: "AWS 101 workshop from the AWS Student Builder Group at Seneca Polytechnic: build a web server and an RDS database with the official AWS tutorial.",
 };
 
 const NAV = [
-  { href: "/guide/", label: "Guide" },
-  { href: "/practice/", label: "Practice" },
-  { href: "/challenge/", label: "Challenge" },
-  { href: "/troubleshooting/", label: "Troubleshooting" },
-  { href: "/cost/", label: "Cost & teardown" },
-  { href: "/organizers/", label: "Organizers" },
+  { href: "#tutorial", label: "Tutorial" },
+  { href: "#differences", label: "Today's changes" },
+  { href: "#challenge", label: "Challenge" },
+  { href: "#stuck", label: "Stuck?" },
+  { href: "#teardown", label: "Teardown" },
 ];
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -28,24 +25,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <header className="topbar">
           <div className="shell">
-            <Link href="/" className="brand">AWS <span>101</span> Workshop</Link>
-            <nav className="nav" aria-label="Main">
-              {NAV.map((n) => (
-                <Link key={n.href} href={n.href}>{n.label}</Link>
-              ))}
-              <ProgressPill />
+            <a href="#top" className="brand">AWS <span>101</span> Workshop</a>
+            <nav className="nav" aria-label="Sections">
+              {NAV.map((n) => <a key={n.href} href={n.href}>{n.label}</a>)}
             </nav>
           </div>
         </header>
-        <main className="shell">{children}</main>
+        <main className="shell" id="top">{children}</main>
         <footer className="footer">
           <div className="shell">
-            <p>{EVENT.group} · {EVENT.date}. AWS facts checked 2026-09-18; re-check before the event.</p>
-            <ul>
-              {SOURCES.map((s) => (
-                <li key={s.href}><a href={s.href}>{s.label}</a></li>
-              ))}
-            </ul>
+            <p>{EVENT.group} · {EVENT.date}. Official AWS documentation:</p>
+            <ul>{LINKS.map((l) => <li key={l.href}><a href={l.href}>{l.label}</a></li>)}</ul>
           </div>
         </footer>
       </body>
