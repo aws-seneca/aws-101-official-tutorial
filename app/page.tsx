@@ -1,69 +1,59 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from "next/link";
+import Timeline from "@/components/Timeline";
+import { EVENT } from "@/lib/content";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <>
+      <p className="eyebrow">{EVENT.group}</p>
+      <h1>AWS 101 Workshop</h1>
+      <ul className="chips">
+        <li>{EVENT.date}</li>
+        <li>{EVENT.length}</li>
+        <li>{EVENT.format}</li>
+        <li>Bring a laptop</li>
+      </ul>
+      <p className="lede">
+        You launch a real server on AWS, load a page from it in your own browser, extend it with your team, and tear it
+        all down before you leave. No experience needed.
+      </p>
+
+      <h2>How the 90 minutes run</h2>
+      <Timeline />
+
+      <h2>What you build</h2>
+      <div className="flow" aria-label="Architecture: browser to EC2 to RDS">
+        <div className="node"><h3>Your browser</h3><p className="muted">Your laptop, anywhere on the internet</p></div>
+        <span className="arrow">HTTP :80 →</span>
+        <div className="node hi"><h3>EC2 t3.micro</h3><p className="muted">nginx serving the workshop site, behind a security group</p></div>
+        <span className="arrow">Postgres :5432 →</span>
+        <div className="node"><h3>RDS PostgreSQL</h3><p className="muted">Never public. Reachable only from your instance&apos;s security group</p></div>
+      </div>
+      <p>Everyone builds the server in the guided section. The database is the hardest add-on in the team challenge.</p>
+
+      <div className="callout info">
+        <strong>The one sentence to remember</strong>
+        A security group blocks everything inbound until you allow it. Most problems today come back to this.
+      </div>
+
+      <h2>Before you come</h2>
+      <ul>
+        <li>Create an AWS account and choose the <strong>free plan</strong>. A card is needed at signup; a debit card works. The free plan never charges it unless you choose to upgrade.</li>
+        <li>Sign in once and make sure you can see the AWS Console.</li>
+        <li>Bring a laptop. Tablets and phones won&apos;t work.</li>
+        <li>Can&apos;t make an account? Come anyway. You&apos;ll pair with someone who has one.</li>
+      </ul>
+
+      <div className="grid2" style={{ marginTop: 24 }}>
+        <Link href="/guide/" className="card" style={{ textDecoration: "none", color: "inherit" }}>
+          <h3>Step-by-step guide →</h3>
+          <p className="muted">Every click, plus the script that sets up your server.</p>
+        </Link>
+        <Link href="/challenge/" className="card" style={{ textDecoration: "none", color: "inherit" }}>
+          <h3>Team challenge →</h3>
+          <p className="muted">Four add-ons, with hints, worth 7 points total.</p>
+        </Link>
+      </div>
+    </>
   );
 }
