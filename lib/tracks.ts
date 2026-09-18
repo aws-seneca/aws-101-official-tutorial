@@ -17,11 +17,22 @@ export const TRACKS: Track[] = [
     items: DB_STEPS.map((s, i) => ({ id: `db-${i}`, label: s.title })),
   },
   {
+    id: "addon1",
+    title: "Wire the database",
+    href: "/challenge/",
+    items: [
+      "Open a shell on your instance",
+      "Run the setup script",
+      "Put your database details in the settings file",
+      "Health check says db: ok",
+      "Submit the form on your public IP",
+    ].map((label, i) => ({ id: `addon1-${i}`, label })),
+  },
+  {
     id: "labs",
     title: "Practice labs",
     href: "/practice/",
     items: [
-      { id: "lab-console", label: "Launch simulator: a working instance on the first try" },
       { id: "lab-sg-web", label: "Security groups: make the site load" },
       { id: "lab-sg-db", label: "Security groups: let only the server reach the database" },
       { id: "lab-quiz", label: "Quiz: 7 out of 8 or better" },

@@ -25,11 +25,13 @@ export const PHASES: Phase[] = [
   { from: 85, to: 90, name: "Close", short: "", tone: "var(--p5)" },
 ];
 
+export const API_SETUP_URL = `https://raw.githubusercontent.com/${REPO}/main/public/workshop-site/api/setup.sh`;
+
 export const USER_DATA = `#!/bin/bash
-dnf install -y nginx
-curl -fsSL "${SITE_URL}" -o /usr/share/nginx/html/index.html
-sed -i "s/YOUR-NAME/Your Name Here/" /usr/share/nginx/html/index.html
-systemctl enable --now nginx`;
+dnf install -y httpd
+curl -fsSL "${SITE_URL}" -o /var/www/html/index.html
+sed -i "s/YOUR-NAME/Your Name Here/g" /var/www/html/index.html
+systemctl enable --now httpd`;
 
 export const LAUNCH_STEPS: { title: string; detail: string }[] = [
   { title: "EC2 → Launch instance", detail: "Check the region in the top right says Canada (Central) first." },
@@ -60,7 +62,7 @@ export const TEARDOWN = [
 export type AddOn = { n: number; points: number; title: string; body: string; done: string };
 
 export const ADD_ONS: AddOn[] = [
-  { n: 1, points: 3, title: "Talk to the database", body: "From your instance, connect to your RDS database, create a table, insert a row, and read it back.", done: "A helper sees your SELECT return your row." },
+  { n: 1, points: 3, title: "Wire the database", body: "Deploy the small sign-up API next to Apache and point it at your RDS database, so the form on your page actually saves.", done: "You submit the form and your name shows under “Latest sign-ups”." },
   { n: 2, points: 1, title: "Make it look good", body: "Edit the site's HTML and CSS on the server.", done: "A helper loads your page and agrees it's better." },
   { n: 3, points: 1, title: "Add a second page", body: "An about.html, or a thanks.html the form links to.", done: "Both pages load from your public IP." },
   { n: 4, points: 2, title: "Give the instance a role", body: "Upload a file to S3, attach an IAM role to the instance, and read the file from the instance with no keys stored on it.", done: "aws s3 cp works from the instance." },
@@ -72,10 +74,12 @@ export const TROUBLE: { symptom: string; cause: string; fix: string }[] = [
   { symptom: "t3.micro isn't marked free tier eligible", cause: "An older account on the legacy free tier, or the wrong region", fix: "Check the region. On older accounts it still works and costs cents" },
   { symptom: "The page won't load", cause: "The security group has no HTTP rule", fix: "Instance → Security tab → edit inbound rules → add HTTP from anywhere" },
   { symptom: "Still won't load, the rule looks right", cause: "Using the private IP, or the browser is forcing https://", fix: "Use the public IPv4 and type http:// explicitly" },
-  { symptom: "nginx's default page, or a blank page", cause: "Still booting, or a typo in user data", fix: "Wait two minutes. If still wrong, check user data and relaunch" },
+  { symptom: "Apache's test page, or a blank page", cause: "Still booting, or a typo in user data", fix: "Wait two minutes. If still wrong, check user data and relaunch" },
+  { symptom: "Form says “no backend is running”", cause: "Add-on 1 not set up yet, or the API stopped", fix: "Run setup.sh, then sudo systemctl status workshop-api" },
+  { symptom: "Form says “DATABASE_URL isn't set yet”", cause: "The settings file still has the placeholder", fix: "sudo nano /etc/workshop-api.env, then sudo systemctl restart workshop-api" },
+  { symptom: "Form says “Can't reach the database”", cause: "db-sg doesn't allow 5432 from web-sg", fix: "Add that inbound rule on the database's security group" },
   { symptom: "EC2 Instance Connect fails", cause: "No SSH rule, or the instance is still starting", fix: "Add SSH (port 22) inbound, wait for 2/2 checks" },
-  { symptom: "psql hangs", cause: "The RDS security group doesn't allow 5432 from the EC2 security group", fix: "Add that rule, with the EC2 security group as the source" },
-  { symptom: "psql: password authentication failed", cause: "Wrong username or password", fix: "Check the master username in the RDS configuration tab; reset the password if needed" },
+  { symptom: "“Wrong database username or password”", cause: "A typo in /etc/workshop-api.env", fix: "Check the master username in the RDS configuration tab; reset the password if needed" },
   { symptom: "aws s3 cp: unable to locate credentials", cause: "No role on the instance yet", fix: "Attach the role, wait a minute, retry" },
 ];
 
@@ -84,10 +88,10 @@ export const CHANGES: { area: string; before: string; after: string; why: string
   { area: "Account model", before: "“Set up a Free Tier account”", after: "“Create an account on the free plan”", why: "The twelve-month free tier became a credits model: $100 at signup, up to $100 more, and the account closes after six months or when credits run out." },
   { area: "IAM", before: "“Without IAM, any service can talk to any other”", after: "AWS denies by default. IAM decides who can call which API", why: "The original was inverted." },
   { area: "EC2 to RDS", before: "An IAM decision", after: "A security group decision", why: "Reaching RDS on port 5432 is network access. The console's connect-to-RDS feature works by editing security groups." },
-  { area: "Database add-on", before: "Form submissions save to the database", after: "psql: create a table, insert and read a row", why: "The base site is static HTML. Saving a form needs backend code, which is a different workshop." },
+  { area: "Database add-on", before: "Form submissions save to the database, with no backend provided", after: "Same goal, with a ready-made 100-line API and a setup script", why: "Static HTML can't talk to a database. Shipping the backend keeps the original add-on and makes it doable in 20 minutes." },
   { area: "Domain add-on", before: "Custom domain with Route 53", after: "IAM role reading from S3", why: "Domains cost money, DNS is slow, and the IP dies at teardown. The role add-on is free and makes IAM concrete." },
   { area: "Teardown", before: "None", after: "Seven minutes, never cut", why: "Forgotten instances and databases burn students' credits." },
-  { area: "Setup", before: "Apache installed over SSH", after: "User data sets it up at boot", why: "SSH is where beginners fall behind. This way everyone reaches a working page." },
+  { area: "Setup", before: "Apache installed by hand over SSH", after: "Apache installed by user data at boot", why: "Same web server, but everyone reaches a working page. SSH moves into the challenge." },
   { area: "Time", before: "No time for account problems", after: "Ten minutes at the start", why: "People who can't sign in are the likeliest way this event fails." },
 ];
 

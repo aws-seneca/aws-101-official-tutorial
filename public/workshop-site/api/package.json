@@ -1,0 +1,13 @@
+{
+  "name": "workshop-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Saves the AWS 101 workshop sign-up form to PostgreSQL",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "pg": "8.23.0"
+  }
+}

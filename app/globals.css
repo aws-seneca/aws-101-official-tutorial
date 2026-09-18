@@ -187,3 +187,5 @@ textarea { font-family: var(--font-mono), monospace; font-size: 13px; width: 100
 .option:hover { background: var(--ground); }
 .option.right { background: color-mix(in srgb, var(--p5) 14%, transparent); }
 .option.wrong { background: var(--warn-soft); }
+details { margin: 8px 0 20px; }
+summary { cursor: pointer; color: var(--accent); font-weight: 600; }

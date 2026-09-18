@@ -25,11 +25,11 @@ export default function Home() {
       <div className="flow" aria-label="Architecture: browser to EC2 to RDS">
         <div className="node"><h3>Your browser</h3><p className="muted">Your laptop, anywhere on the internet</p></div>
         <span className="arrow">HTTP :80 →</span>
-        <div className="node hi"><h3>EC2 t3.micro</h3><p className="muted">nginx serving the workshop site, behind a security group</p></div>
+        <div className="node hi"><h3>EC2 t3.micro</h3><p className="muted">Apache serving the sign-up page, behind a security group</p></div>
         <span className="arrow">Postgres :5432 →</span>
         <div className="node"><h3>RDS PostgreSQL</h3><p className="muted">Never public. Reachable only from your instance&apos;s security group</p></div>
       </div>
-      <p>Everyone builds the server in the guided section. The database is the hardest add-on in the team challenge.</p>
+      <p>Everyone gets the page live in the guided section. Making the sign-up form actually save to the database is the big add-on in the team challenge.</p>
 
       <div className="callout info">
         <strong>The one sentence to remember</strong>
