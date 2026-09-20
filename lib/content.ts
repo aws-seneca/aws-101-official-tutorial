@@ -66,7 +66,7 @@ const shot = (src: string, w: number, h: number, caption: string): Shot => ({ sr
 export const SHOT_NOTE =
   "The screenshots are from a dry run of this workshop. Account numbers, addresses and endpoints are painted out. Where the dry run made a different choice from ours, the red label says so.";
 
-export const BROKEN_PAGE_SHOT = shot("17-page-broken", 1500, 822, "SamplePage.php loaded but only the heading rendered: PHP stopped at the database connection. Check /var/www/inc/dbinfo.inc.");
+export const BROKEN_PAGE_SHOT = shot("17-page-broken", 1500, 822, "The heading rendered and then nothing. PHP hit a fatal error, so it never got as far as printing a connection message: the PostgreSQL extension is missing, or dbinfo.inc is not where the page looks for it.");
 
 export type Part = {
   id: string;
@@ -429,7 +429,9 @@ export const STUCK: { symptom: string; fix: string }[] = [
   { symptom: "I get the Apache test page, not my page", fix: "The test page only shows while /var/www/html is empty. Add /SamplePage.php to the address." },
   { symptom: "groups doesn't list apache", fix: "The usermod only takes effect in a new login. Close the Instance Connect tab and connect again." },
   { symptom: "dnf can't find php-pgsql or postgresql15", fix: "The instance isn't Amazon Linux 2023. Run cat /etc/system-release; relaunch with the AL2023 AMI." },
-  { symptom: "SamplePage.php says “Failed to connect to PostgreSQL”", fix: "Check the endpoint (no :5432), username tutorial_user, your password and database name sample in /var/www/inc/dbinfo.inc. A space in the password also breaks it. Then check the database is Available and that you used Connect to an EC2 compute resource in Part 2." },
+  { symptom: "SamplePage.php says “Failed to connect to PostgreSQL”", fix: "The page ran and the database refused it. Check the endpoint (no :5432), username tutorial_user, your password and database name sample in /var/www/inc/dbinfo.inc. A space in the password also breaks it. Then check the database is Available and that you used Connect to an EC2 compute resource in Part 2." },
+  { symptom: "I still have your-db-endpoint and your master password in dbinfo.inc", fix: "That is the single most common way to lose twenty minutes. Paste your real endpoint and the password you wrote down in Part 2. If you never set one because the console generated it, you cannot read it back: RDS → your database → Modify → set a new master password." },
+  { symptom: "The heading appears and then the page stops", fix: "A fatal error, before PHP could print anything useful. Either php-pgsql is missing, so run sudo dnf install -y php-pgsql and sudo systemctl restart httpd, or dbinfo.inc is not at /var/www/inc/dbinfo.inc — check the spelling and that you made it in /var/www, not /var/www/html." },
   { symptom: "The page shows PHP source code instead of running", fix: "PHP isn't installed or Apache wasn't restarted: sudo systemctl restart httpd." },
   { symptom: "The page prints “Forming Query”", fix: "Nothing is wrong. It is a leftover echo in AWS's sample code. Deleting it is worth a point in the challenge." },
 ];
