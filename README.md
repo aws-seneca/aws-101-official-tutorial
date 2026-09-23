@@ -4,7 +4,7 @@ AWS 101 workshop from the AWS Student Builder Group at Seneca Polytechnic, Wedne
 
 Attendees build a real web app in the AWS Console by following AWS's official tutorial, [Create a web server and an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html): an EC2 instance on Amazon Linux 2023, an RDS PostgreSQL database, and Apache with PHP serving AWS's `SamplePage.php`, which saves to the database. Teams then extend it, and everyone deletes their resources before leaving.
 
-The workshop is guided in person. This repo is the companion site at https://aws-seneca.github.io/aws-101-workshop/, which carries the whole walkthrough rather than only linking to it:
+The workshop is guided in person. This repo is the companion site at https://aws-seneca.github.io/aws-101-official-tutorial/, which carries the whole walkthrough rather than only linking to it:
 
 - A diagram of what gets built, and the two security-group rules that make it work
 - Every step of all three parts, with the console values to type and the commands ready to copy
