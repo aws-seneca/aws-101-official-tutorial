@@ -1,0 +1,11 @@
+{
+  "title": "AWS 101",
+  "pages": [
+    "index",
+    "workshop",
+    "concepts",
+    "architecture",
+    "certification",
+    "contributing"
+  ]
+}

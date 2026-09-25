@@ -1,0 +1,32 @@
+---
+title: Contributing
+description: Add or improve a page. You do not need to be on the exec team.
+---
+
+Every page is a Markdown file in the [`content/docs`](https://github.com/aws-seneca/aws-101-official-tutorial/tree/main/content/docs) folder of this site's repo. The best pages come from people who just figured something out.
+
+## Edit a page
+
+1. Open the page on this site and choose **Edit this page on GitHub** at the bottom.
+2. Make the change in GitHub's editor and open a pull request.
+
+## Add a page
+
+1. Create a `.mdx` file in the right folder, with a title and a one-line description at the top:
+
+   ```mdx
+   ---
+   title: CloudWatch
+   description: Logs, metrics, and alarms for everything you run.
+   ---
+   ```
+
+2. Add its file name (without `.mdx`) to that folder's `meta.json`, where you want it in the sidebar.
+3. Preview locally with `npm install` and `npm run dev`, then open a pull request.
+
+## House style
+
+- Direct and plain. Explain it the way you would to a classmate.
+- Link the official AWS docs for anything factual, and check prices and free-plan details there: they change.
+- One idea per section. Tables for comparisons, numbered steps for anything to do in the console.
+- Never commit account IDs, access keys, passwords, or screenshots that show them.

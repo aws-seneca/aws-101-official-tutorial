@@ -1,0 +1,26 @@
+---
+title: "3. Scaling out"
+description: A load balancer in front of several app servers, replaced automatically when they fail.
+---
+
+```text
+Browser ──> Application Load Balancer ──> Auto Scaling group: EC2, EC2, ...
+                                            └──> RDS (Multi-AZ)
+```
+
+<Callout title="Architecture pages grow over time">
+Each page describes one design for the same sign-up app: the diagram, what it fixes, what it costs you, and when to use it. Help write them: see [Contributing](/docs/contributing).
+</Callout>
+
+## What this page will cover
+
+- Why design 2 made this possible: the app servers no longer hold data
+- Application Load Balancer: health checks and spreading traffic
+- Auto Scaling groups and launch templates: user data that installs and starts the app
+- The demo that makes it click: terminate an instance and watch the site stay up
+- What it costs compared with design 2
+
+## Official docs
+
+- [Application Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html)
+- [Amazon EC2 Auto Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html)

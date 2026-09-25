@@ -1,0 +1,27 @@
+---
+title: "4. Serverless"
+description: "No servers to manage: functions, a managed API, and a serverless database."
+---
+
+```text
+Browser ──> S3 + CloudFront (the page)
+        └─> API Gateway ──> Lambda (add, list, delete) ──> DynamoDB
+```
+
+<Callout title="Architecture pages grow over time">
+Each page describes one design for the same sign-up app: the diagram, what it fixes, what it costs you, and when to use it. Help write them: see [Contributing](/docs/contributing).
+</Callout>
+
+## What this page will cover
+
+- What "serverless" means, and what you give up
+- The same three operations as Lambda functions behind API Gateway
+- DynamoDB versus PostgreSQL for this data
+- Pay per request: what the sign-up app would cost at club scale
+- When serverless is the wrong choice
+
+## Official docs
+
+- [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
+- [Amazon API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html)
+- [Amazon DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html)

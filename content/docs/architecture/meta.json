@@ -1,0 +1,10 @@
+{
+  "title": "Architecture",
+  "pages": [
+    "index",
+    "1-single-server",
+    "2-managed-database",
+    "3-scaling-out",
+    "4-serverless"
+  ]
+}

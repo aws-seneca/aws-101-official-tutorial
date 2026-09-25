@@ -1,0 +1,25 @@
+---
+title: "1. Single server"
+description: Everything on one EC2 instance. Where the workshop starts.
+---
+
+```text
+Browser ──HTTP──> EC2 instance
+                   ├─ the app (Next.js)
+                   └─ signups.json on the instance's disk
+```
+
+This is the workshop's Part 1.
+
+## What works
+
+- Simple: one thing to launch, one thing to look at.
+- Cheap, and fine for a demo.
+
+## What breaks
+
+- **The data dies with the instance.** Terminate it, or lose its disk, and every sign-up is gone.
+- **It cannot scale out.** A second instance would have its own `signups.json`, so the two would disagree.
+- **Concurrent writes can clash.** Two sign-ups at the same moment can overwrite each other.
+
+Design 2 fixes the first two by moving the data off the server.

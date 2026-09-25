@@ -1,0 +1,60 @@
+---
+title: "Part 1: Run the app on EC2"
+description: Launch a server, install the app, and see it work with data stored on the server's own disk.
+---
+
+<Steps>
+<Step>
+
+### Launch an instance
+
+EC2 console, **Launch instance**:
+
+| Setting | Choose |
+|---|---|
+| Name | `aws-101-app` |
+| AMI | **Amazon Linux 2023** |
+| Instance type | **t3.small**. The build needs about 2 GB of memory; `t3.micro` is too small |
+| Key pair | Proceed without a key pair (you connect through the browser) |
+| Network settings | Keep **Allow SSH traffic from Anywhere** (EC2 Instance Connect needs it), and add a rule: **Custom TCP, port 3000, source My IP** |
+
+<Screenshot alt="EC2 launch form with Amazon Linux 2023, t3.small, and the port 3000 rule" />
+
+</Step>
+<Step>
+
+### Connect and install
+
+Select the instance, **Connect**, **EC2 Instance Connect**, **Connect**. In the terminal that opens:
+
+```bash
+sudo dnf install -y nodejs22 nodejs22-npm git
+git clone https://github.com/aws-seneca/aws-101-workshop.git
+cd aws-101-workshop
+npm install
+npm run build
+npm start
+```
+
+`npm install` and `npm run build` take a minute or two.
+
+</Step>
+<Step>
+
+### Use it
+
+Open `http://YOUR-PUBLIC-IP:3000`. Type the `http://` yourself; the app has no HTTPS. Join the waitlist a few times, then open `/admin`.
+
+<Screenshot alt="The waitlist page and the /admin table showing Local JSON" />
+
+</Step>
+</Steps>
+
+## What you are looking at
+
+The label in the top right of `/admin` says **Local JSON**. Every sign-up is written to `signups.json` on this one instance:
+
+- Terminate the instance and the sign-ups are gone.
+- Add a second server behind a load balancer and it has its own file: the two disagree.
+
+Keep the app running and go to [Part 2](/docs/workshop/2-create-rds).
