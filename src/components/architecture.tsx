@@ -1,5 +1,5 @@
-import { EVENT } from "@/lib/content";
 
+// Ported from the original single-page site (app/diagram.tsx).
 // AWS's architecture-diagram convention — region, VPC, subnet and security
 // groups as nested frames — drawn with our own shapes, not AWS's icon files.
 // The nesting carries the idea, so containers are tinted rather than outlined.
@@ -9,7 +9,7 @@ const DB = "M 372 208 V 292";
 
 export function Architecture() {
   return (
-    <div className="arch">
+    <figure className="arch not-prose my-6 rounded-xl border bg-fd-card p-5">
       <svg viewBox="0 0 900 430" role="img" aria-labelledby="arch-t arch-d">
         <title id="arch-t">Where your two resources sit, and what lets them talk</title>
         <desc id="arch-d">
@@ -31,7 +31,7 @@ export function Architecture() {
         {/* Region */}
         <rect x="188" y="30" width="704" height="382" className="box-region" />
         <text x="202" y="22" className="t-region">
-          AWS Region · {EVENT.region}
+          AWS Region · ca-central-1
         </text>
 
         {/* VPC */}
@@ -121,58 +121,68 @@ export function Architecture() {
         <circle r="5" className="pkt pkt-2" fill="#0972d3" style={{ offsetPath: `path("${DB}")` }} />
 
         <style>{`
-          .box-out { fill: var(--surface); stroke: #8b96a5; stroke-width: 1.5; }
-          .box-region { fill: none; stroke: #8b96a5; stroke-width: 1.25; stroke-dasharray: 6 5; }
-          .box-vpc { fill: #faf7fe; stroke: #7d3ec6; stroke-width: 1.5; }
-          .box-public { fill: #eef6ff; stroke: #0972d3; stroke-width: 1.25; stroke-dasharray: 5 4; }
-          .box-private { fill: #f4f6f7; stroke: #5f6b7a; stroke-width: 1.25; stroke-dasharray: 5 4; }
-          .box-sg { fill: #f2f8f0; stroke: #037f0c; stroke-width: 1.5; stroke-dasharray: 4 3; }
-          .fill-ec2 { fill: #ec7211; }
-          .fill-rds { fill: #0972d3; }
-          .wire { fill: none; stroke: #445263; stroke-width: 2; }
-          .tip { fill: #445263; }
-          .port-bg { fill: var(--surface); stroke: #d5dbdb; stroke-width: 1; }
+          .arch .box-out { fill: var(--color-fd-card); stroke: #8b96a5; stroke-width: 1.5; }
+          .arch .box-region { fill: none; stroke: #8b96a5; stroke-width: 1.25; stroke-dasharray: 6 5; }
+          .arch .box-vpc { fill: #faf7fe; stroke: #7d3ec6; stroke-width: 1.5; }
+          .arch .box-public { fill: #eef6ff; stroke: #0972d3; stroke-width: 1.25; stroke-dasharray: 5 4; }
+          .arch .box-private { fill: #f4f6f7; stroke: #5f6b7a; stroke-width: 1.25; stroke-dasharray: 5 4; }
+          .arch .box-sg { fill: #f2f8f0; stroke: #037f0c; stroke-width: 1.5; stroke-dasharray: 4 3; }
+          .arch .fill-ec2 { fill: #ec7211; }
+          .arch .fill-rds { fill: #0972d3; }
+          .arch .wire { fill: none; stroke: #445263; stroke-width: 2; }
+          .arch .tip { fill: #445263; }
+          .arch .port-bg { fill: var(--color-fd-card); stroke: #d5dbdb; stroke-width: 1; }
 
-          .t-region { font: 600 12px var(--font-sans), sans-serif; fill: #5f6b7a; letter-spacing: .02em; }
-          .t-vpc { font: 700 13px var(--font-sans), sans-serif; fill: #7d3ec6; }
-          .t-vpc-d { font: 400 12px var(--font-sans), sans-serif; fill: #8f7aa8; }
-          .t-sub { font: 700 13px var(--font-sans), sans-serif; fill: #0972d3; }
-          .t-priv { font: 700 13px var(--font-sans), sans-serif; fill: #445263; }
-          .t-sub-d { font: 400 12px var(--font-sans), sans-serif; fill: #6b7787; }
-          .t-node { font: 700 21px var(--font-sans), sans-serif; fill: #fff; text-anchor: middle; letter-spacing: -.01em; }
-          .t-sub-n { font: 400 12px var(--font-mono), monospace; fill: #fff; text-anchor: middle; opacity: .95; }
-          .t-node-o { font: 700 15px var(--font-sans), sans-serif; fill: #16191f; text-anchor: middle; }
-          .t-sub-o { font: 400 11.5px var(--font-sans), sans-serif; fill: #6b7787; text-anchor: middle; }
-          .t-sg { font: 700 13px var(--font-mono), monospace; fill: #037f0c; letter-spacing: .02em; }
-          .t-rule { font: 400 12.5px var(--font-mono), monospace; fill: #3f5c45; }
-          .t-rule-x { font: 400 12.5px var(--font-mono), monospace; fill: #9aa5b1; }
-          .t-port { font: 600 11.5px var(--font-mono), monospace; fill: #16191f; text-anchor: middle; }
+          .arch .t-region { font-weight: 600; font-size: 12px; fill: #5f6b7a; letter-spacing: .02em; }
+          .arch .t-vpc { font-weight: 700; font-size: 13px; fill: #7d3ec6; }
+          .arch .t-vpc-d { font-weight: 400; font-size: 12px; fill: #8f7aa8; }
+          .arch .t-sub { font-weight: 700; font-size: 13px; fill: #0972d3; }
+          .arch .t-priv { font-weight: 700; font-size: 13px; fill: #445263; }
+          .arch .t-sub-d { font-weight: 400; font-size: 12px; fill: #6b7787; }
+          .arch .t-node { font-weight: 700; font-size: 21px; fill: #fff; text-anchor: middle; letter-spacing: -.01em; }
+          .arch .t-sub-n { font: 400 12px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #fff; text-anchor: middle; opacity: .95; }
+          .arch .t-node-o { font-weight: 700; font-size: 15px; fill: #16191f; text-anchor: middle; }
+          .arch .t-sub-o { font-weight: 400; font-size: 11.5px; fill: #6b7787; text-anchor: middle; }
+          .arch .t-sg { font: 700 13px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #037f0c; letter-spacing: .02em; }
+          .arch .t-rule { font: 400 12.5px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #3f5c45; }
+          .arch .t-rule-x { font: 400 12.5px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #9aa5b1; }
+          .arch .t-port { font: 600 11.5px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #16191f; text-anchor: middle; }
 
-          @media (prefers-color-scheme: dark) {
-            .box-out { stroke: #64748b; }
-            .box-region { stroke: #64748b; }
-            .box-vpc { fill: #1b1629; stroke: #a875e8; }
-            .box-public { fill: #0f2236; stroke: #539fe5; }
-            .box-private { fill: #141c27; stroke: #7c8b9c; }
-            .box-sg { fill: #10220f; stroke: #29ad32; }
-            .wire { stroke: #93a2b4; }
-            .tip { fill: #93a2b4; }
-            .port-bg { stroke: #2c3a4d; }
-            .t-region, .t-sub-d, .t-sub-o { fill: #96a3b3; }
-            .t-vpc { fill: #c39cf0; } .t-vpc-d { fill: #9b86b5; }
-            .t-sub { fill: #6bb0ef; }
-            .t-priv { fill: #b6c0cc; }
-            .t-node-o, .t-port { fill: #e9ebed; }
-            .t-sg { fill: #35c440; } .t-rule { fill: #a8c9ac; } .t-rule-x { fill: #6b7787; }
+          
+
+          .dark .arch .box-out { stroke: #64748b; }
+          .dark .arch .box-region { stroke: #64748b; }
+          .dark .arch .box-vpc { fill: #1b1629; stroke: #a875e8; }
+          .dark .arch .box-public { fill: #0f2236; stroke: #539fe5; }
+          .dark .arch .box-private { fill: #141c27; stroke: #7c8b9c; }
+          .dark .arch .box-sg { fill: #10220f; stroke: #29ad32; }
+          .dark .arch .wire { stroke: #93a2b4; }
+          .dark .arch .tip { fill: #93a2b4; }
+          .dark .arch .port-bg { stroke: #2c3a4d; }
+          .dark .arch .t-region, .dark .arch .t-sub-d, .dark .arch .t-sub-o { fill: #96a3b3; }
+          .dark .arch .t-vpc { fill: #c39cf0; } .dark .arch .t-vpc-d { fill: #9b86b5; }
+          .dark .arch .t-sub { fill: #6bb0ef; }
+          .dark .arch .t-priv { fill: #b6c0cc; }
+          .dark .arch .t-node-o, .dark .arch .t-port { fill: #e9ebed; }
+          .dark .arch .t-sg { fill: #35c440; } .dark .arch .t-rule { fill: #a8c9ac; } .dark .arch .t-rule-x { fill: #6b7787; }
+          
+          .arch .pkt { animation: arch-flow 4.6s linear infinite; }
+          .arch .pkt-2 { animation-delay: 2.3s; }
+          @keyframes arch-flow {
+            0% { offset-distance: 0%; opacity: 0; }
+            7% { opacity: 1; }
+            93% { opacity: 1; }
+            100% { offset-distance: 100%; opacity: 0; }
           }
+          @media (prefers-reduced-motion: reduce) { .arch .pkt { animation: none; offset-distance: 52%; opacity: 1; } }
         `}</style>
       </svg>
 
-      <p className="arch-note">
+      <figcaption className="mt-4 border-t pt-4 text-sm text-fd-muted-foreground">
         Read it inside out. The database is not on the internet at all: the only inbound rule on <code>sg-rds</code> names{" "}
         <code>sg-ec2</code>, so your instance can reach it and your laptop cannot. The RDS console writes that rule for
-        you in Part 2, at the <strong>Connect to an EC2 compute resource</strong> step.
-      </p>
-    </div>
+        you in Part 2, at the <strong className="text-fd-foreground">Connect to an EC2 compute resource</strong> step.
+      </figcaption>
+    </figure>
   );
 }

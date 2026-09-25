@@ -1,0 +1,23 @@
+---
+title: "2. Managed database"
+description: The app stays on EC2; the data moves to RDS. Where the workshop ends.
+---
+
+```text
+Browser ──HTTP──> EC2 instance (public subnet)
+                   └─ the app ──PostgreSQL, TLS──> RDS (private subnet)
+```
+
+This is the workshop's Part 3.
+
+<Callout title="Architecture pages grow over time">
+Each page describes one design for the same sign-up app: the diagram, what it fixes, what it costs you, and when to use it. Help write them: see [Contributing](/docs/contributing).
+</Callout>
+
+## What this page will cover
+
+- What moved and what did not: the app is stateless now, the database holds the state
+- The security groups "Connect to an EC2 compute resource" created, drawn out
+- What RDS handles for you: backups, patching, failover options
+- What is still fragile: one EC2 instance, a password in a `.env` file
+- Next steps: Multi-AZ, and Secrets Manager with an IAM role instead of `.env`

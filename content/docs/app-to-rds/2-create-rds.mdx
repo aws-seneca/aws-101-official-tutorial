@@ -1,0 +1,27 @@
+---
+title: "Part 2: Create the database"
+description: Create a managed PostgreSQL database and let RDS wire up the network for you.
+---
+
+RDS console, **Create database**, **Standard create**:
+
+| Setting | Choose | Why |
+|---|---|---|
+| Engine | **PostgreSQL** | The app speaks PostgreSQL |
+| Templates | **Free tier**, or the smallest option offered | |
+| DB instance identifier | `aws-101-signups` | |
+| Master username | `postgres` | |
+| Credentials management | **Self managed**, then type a password of **letters and numbers only** | It goes inside a URL in Part 3; `@ : / #` would break it |
+| Connectivity | **Connect to an EC2 compute resource**, then pick `aws-101-app` | See below |
+
+<Screenshot src="/shots/13-connect-to-ec2.webp" alt="RDS Connectivity section with Connect to an EC2 compute resource selected" caption="Connect to an EC2 compute resource: pick the instance from Part 1." />
+
+<Callout title="What that one choice did">
+RDS created two security groups that reference each other: one on your instance, one on the database. Only your instance can reach the database on port 5432, and the database sits in a private subnet with no route from the internet. Nobody typed an IP address.
+</Callout>
+
+Choose **Create database**. It takes a few minutes. While you wait, read [RDS](/docs/concepts/rds) in Concepts.
+
+When the status is **Available**, open the database and copy the **Endpoint** from **Connectivity & security**.
+
+<Screenshot alt="RDS database details with the Endpoint highlighted" />

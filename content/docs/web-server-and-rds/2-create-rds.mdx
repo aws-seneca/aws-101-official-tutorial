@@ -1,0 +1,111 @@
+---
+title: "Part 2: Create an Amazon RDS DB instance"
+description: "A managed PostgreSQL database. The console wires its security group so only your server can reach it."
+---
+
+**Time:** 10 minutes of clicking, then 5 to 10 minutes of waiting.
+
+AWS's version of this part: [Create an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Tutorials.WebServerDB.CreateDBInstance.html).
+
+<Steps>
+<Step>
+
+### Open the RDS console, same region
+
+Canada (Central) again. Databases in the left nav, then Create database, then Standard create.
+
+<Screenshot src="/shots/09-find-rds.webp" width={1500} height={827} alt="RDS is listed as Aurora and RDS." caption="RDS is listed as Aurora and RDS." />
+
+<Screenshot src="/shots/10-rds-nav.webp" width={279} height={871} alt="Databases, in the left nav." caption="Databases, in the left nav." />
+
+</Step>
+<Step>
+
+### Engine and template
+
+| Field | Value | Note |
+|---|---|---|
+| Engine options | **PostgreSQL** |  |
+| Templates | **Free tier** | Free plan accounts see Free tier. Paid plan accounts see Sandbox instead. Pick whichever you have. |
+| Availability and durability | **Leave as is** |  |
+
+<Screenshot src="/shots/11-engine-options.webp" width={1500} height={822} alt="Plain PostgreSQL, the one with the elephant. Aurora is a different, pricier product." caption="Plain PostgreSQL, the one with the elephant. Aurora is a different, pricier product." />
+
+</Step>
+<Step>
+
+### Settings
+
+Type these exactly. The sample page has the username and the database name hard-coded.
+
+| Field | Value | Note |
+|---|---|---|
+| DB instance identifier | **tutorial-db-instance** |  |
+| Master username | **tutorial_user** |  |
+| Auto generate a password | **Off** |  |
+| Master password | **Letters and numbers only** | No spaces, no quotes. Write it down; you cannot read it back later. |
+
+<Screenshot src="/shots/12-db-settings.webp" width={1500} height={824} alt="The identifier and username must match exactly. Self managed lets you type the password the sample page will use." caption="The identifier and username must match exactly. Self managed lets you type the password the sample page will use." />
+
+</Step>
+<Step>
+
+### Instance configuration and storage
+
+| Field | Value | Note |
+|---|---|---|
+| Instance class | **Burstable classes (includes t classes) → db.t3.micro** |  |
+| Storage | **Leave every default** |  |
+
+<Screenshot src="/shots/14-instance-class.webp" width={1500} height={823} alt="Burstable classes, db.t3.micro. Storage stays at whatever the Free tier template gives you." caption="Burstable classes, db.t3.micro. Storage stays at whatever the Free tier template gives you." />
+
+</Step>
+<Step>
+
+### Connectivity: this is the step that matters
+
+This is where the database gets a security group rule that lets your server in, and nothing else. Skip it and the sample page will never connect.
+
+| Field | Value | Note |
+|---|---|---|
+| Compute resource | **Connect to an EC2 compute resource** |  |
+| EC2 instance | **tutorial-ec2-instance-web-server** | The instance you launched in Part 1. |
+| Database authentication | **Password authentication** |  |
+
+<Screenshot src="/shots/13-connect-to-ec2.webp" width={1500} height={751} alt="Connect to an EC2 compute resource, then pick your instance. RDS creates the security group rules for you." caption="Connect to an EC2 compute resource, then pick your instance. RDS creates the security group rules for you." />
+
+</Step>
+<Step>
+
+### Open Additional configuration and set the database name
+
+It is collapsed, near the bottom, and easy to miss.
+
+| Field | Value | Note |
+|---|---|---|
+| Initial database name | **sample** | Lowercase. Without this there is no database for the page to use. |
+
+</Step>
+<Step>
+
+### Choose Create database, then start Part 3 while it builds
+
+Status goes Creating for several minutes. You do not need it yet. Go to Part 3 and come back at the dbinfo.inc step.
+
+</Step>
+<Step>
+
+### When Status is Available, copy the endpoint
+
+Choose the database name, then Connectivity & security. The endpoint looks like tutorial-db-instance.abc123.ca-central-1.rds.amazonaws.com. Copy it without the :5432 port.
+
+<Screenshot src="/shots/15-db-endpoint.webp" width={1500} height={824} alt="Connectivity & security. Copy the endpoint only, never the port. Yours shows 5432 because it is PostgreSQL." caption="Connectivity & security. Copy the endpoint only, never the port. Yours shows 5432 because it is PostgreSQL." />
+
+</Step>
+</Steps>
+
+<Callout type="success" title="Checkpoint">
+Status is Available, the endpoint is copied without the port, and the master password is written down.
+</Callout>
+
+Next: [Part 3: Install a web server on your EC2 instance](/docs/web-server-and-rds/3-web-server).

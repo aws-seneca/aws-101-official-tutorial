@@ -1,0 +1,64 @@
+---
+title: "Lesson 1: A web server and a database"
+description: "AWS's official tutorial: an EC2 server, an RDS PostgreSQL database, and a PHP page that saves to it."
+---
+
+A server on EC2, a PostgreSQL database on RDS, and a PHP page that saves to it. Every step is in these pages, in order, with the commands ready to copy. Then you extend it, and delete it all when you finish. It takes about 90 minutes.
+
+This is AWS's own tutorial, [Tutorial: Create a web server and an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html), with the five changes in [Where this lesson differs](#where-this-lesson-differs-from-the-tutorial) already applied. You do not need it open to follow along, but it is worth reading afterwards.
+
+## Before you start
+
+- Create an AWS account and choose the **free plan**. A card is needed at signup; a debit card works. The free plan never charges it unless you choose to upgrade.
+- Sign in once and make sure you can see the AWS Console.
+- A laptop. Tablets and phones won't work.
+- At a club workshop and can't make an account? Come anyway. You'll pair with someone who has one.
+
+## What you are building
+
+Two resources and one rule between them. The database never gets a route from the internet: the only thing allowed to reach it on port 5432 is the instance sitting in front of it.
+
+<Architecture />
+
+| Part | What you make | How long |
+|---|---|---|
+| [1. Launch an EC2 instance](/docs/web-server-and-rds/1-launch-ec2) | A virtual server running Amazon Linux 2023, with a security group that lets web traffic in. | 10 minutes |
+| [2. Create an Amazon RDS DB instance](/docs/web-server-and-rds/2-create-rds) | A managed PostgreSQL database. The console wires its security group so only your server can reach it. | 10 minutes of clicking, then 5 to 10 minutes of waiting |
+| [3. Install a web server on your EC2 instance](/docs/web-server-and-rds/3-web-server) | Apache and PHP, plus AWS's SamplePage.php: a form that saves to the database and lists what's there. | 25 minutes |
+
+Do them in order. Part 2 takes several minutes to finish creating, so start Part 3 while you wait.
+
+<Callout title="About the screenshots">
+The screenshots are from a dry run of this workshop. Account numbers, addresses and endpoints are painted out. Where the dry run made a different choice from ours, the red label says so.
+</Callout>
+
+## Where this lesson differs from the tutorial
+
+The steps already have these five changes baked in. They are listed so you know what changed and why, and so the tutorial still makes sense when you read it.
+
+| Step | Tutorial says | This lesson | Why |
+|---|---|---|---|
+| Region | Any region | **Canada (Central), ca-central-1** | Everyone in the same place, so helpers can find your resources. If something “disappears”, check the region first. |
+| Instance type | t2.micro | **t3.micro** | Accounts created on or after July 15, 2025 get free-plan credits for t3.micro, not t2.micro. |
+| Key pair and SSH | Create a key pair, SSH from My IP | **Proceed without a key pair. Allow SSH from anywhere (0.0.0.0/0)** | We connect with EC2 Instance Connect in the browser. It needs port 22 open to AWS's service, which “My IP” blocks. Fine for 90 minutes; never in production. |
+| Database engine | MariaDB, MySQL or PostgreSQL | **PostgreSQL** | One engine for the whole room. Follow the PostgreSQL tabs in each part; everything on this page is already the PostgreSQL version. |
+| Master password | Any password | **Letters and numbers only** | The PostgreSQL connection string in the sample page is separated by spaces, so a space or a quote in the password breaks it. |
+
+<Callout type="warn" title="The one idea to take home">
+A security group blocks all inbound traffic until you add a rule. Your browser reaches the server because of the HTTP rule. The server reaches the database because of a rule the RDS console wrote for you. That is networking, not IAM.
+</Callout>
+
+## How the free plan works now
+
+AWS changed its free tier in July 2025. New accounts pick a free plan or a paid plan. The free plan gives $100 in credits at signup and up to $100 more for trying core services, never charges your card unless you upgrade, and closes after six months or when the credits run out. It is not "free for a year" any more. Check [aws.amazon.com/free](https://aws.amazon.com/free/) for the current rules.
+
+## Links
+
+- [Tutorial: Create a web server and an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html)
+- [Deleting a DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html)
+- [Terminate an EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/terminating-instances.html)
+- [Connect with EC2 Instance Connect](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connect-linux-inst-eic.html)
+- [AWS Free Tier](https://aws.amazon.com/free/)
+- [AWS Certified Cloud Practitioner](https://aws.amazon.com/certification/certified-cloud-practitioner/)
+
+Start with [Part 1: Launch an EC2 instance](/docs/web-server-and-rds/1-launch-ec2).

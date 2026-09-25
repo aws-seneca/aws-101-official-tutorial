@@ -40,3 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .claude/
+
+# Tool folders
+.claude/
+.playwright-mcp/
+
+# fumadocs-mdx generated
+/.source/

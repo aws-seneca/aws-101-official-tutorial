@@ -1,0 +1,15 @@
+---
+title: Architecture
+description: One app, four designs, from a single server to serverless.
+---
+
+The workshop app is small, but the question it raises is real: where should the data and the code live as the app grows? These pages follow the same sign-up app through four designs.
+
+| Design | Fixes | New problem |
+|---|---|---|
+| [1. Single server](/docs/architecture/1-single-server) | Nothing: the starting point | Data and app die together |
+| [2. Managed database](/docs/architecture/2-managed-database) | Data outlives the server | One server is still a single point of failure |
+| [3. Scaling out](/docs/architecture/3-scaling-out) | Survives a server dying, handles more traffic | More moving parts, higher cost |
+| [4. Serverless](/docs/architecture/4-serverless) | No servers to patch or size | Different programming model |
+
+The [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html) is the vocabulary for comparing them: reliability, security, cost, performance, operations, sustainability.

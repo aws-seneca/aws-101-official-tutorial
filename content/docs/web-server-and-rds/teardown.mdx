@@ -1,0 +1,12 @@
+---
+title: "Tear it down"
+description: "Delete everything, so nothing keeps using your credits."
+---
+
+On the free plan nothing here can charge your card, but running resources burn the credits you would rather spend on your own projects. Do this as soon as you finish.
+
+1. RDS → Databases → select tutorial-db-instance → Actions → Delete. Untick “Create final snapshot” and “Retain automated backups”, tick the acknowledgement, type delete me.
+2. EC2 → Instances → select your instance → Instance state → Terminate.
+3. If you did the role add-on: empty and delete the S3 bucket.
+4. Refresh both pages. Deleting and Terminated mean you're done.
+

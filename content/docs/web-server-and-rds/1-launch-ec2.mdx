@@ -1,0 +1,81 @@
+---
+title: "Part 1: Launch an EC2 instance"
+description: "A virtual server running Amazon Linux 2023, with a security group that lets web traffic in."
+---
+
+**Time:** 10 minutes.
+
+AWS's version of this part: [Launch an EC2 instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Tutorials.WebServerDB.LaunchEC2.html).
+
+<Steps>
+<Step>
+
+### Open the EC2 console and check the region
+
+Top right of the console must read Canada (Central). Every resource you create lives in one region only. Then choose Launch instance.
+
+<Screenshot src="/shots/01-console-home.webp" width={1500} height={823} alt="Console Home. The region selector is top right; switch it before you make anything." caption="Console Home. The region selector is top right; switch it before you make anything." />
+
+<Screenshot src="/shots/02-find-ec2.webp" width={1500} height={826} alt="Search is the fastest way to any service. EC2 is virtual servers." caption="Search is the fastest way to any service. EC2 is virtual servers." />
+
+<Screenshot src="/shots/03-ec2-dashboard.webp" width={1500} height={826} alt="The EC2 dashboard. Launch instance is in the middle." caption="The EC2 dashboard. Launch instance is in the middle." />
+
+</Step>
+<Step>
+
+### Fill in the launch form
+
+Leave every field not listed here at its default.
+
+| Field | Value | Note |
+|---|---|---|
+| Name | **tutorial-ec2-instance-web-server** |  |
+| Application and OS Images | **Amazon Linux 2023 AMI** | Under Amazon Linux. The quick-start default. |
+| Instance type | **t3.micro** | Tutorial says t2.micro. Use t3.micro. |
+| Key pair (login) | **Proceed without a key pair** | We connect through the browser instead. |
+
+<Screenshot src="/shots/04-choose-ami.webp" width={1500} height={835} alt="Amazon Linux 2023 is already selected under Quick Start. Leave it." caption="Amazon Linux 2023 is already selected under Quick Start. Leave it." />
+
+<Screenshot src="/shots/05-type-and-key.webp" width={1500} height={826} alt="The dry run left the tutorial's defaults here. Change both: t3.micro, and no key pair." caption="The dry run left the tutorial's defaults here. Change both: t3.micro, and no key pair." />
+
+</Step>
+<Step>
+
+### Set Network settings
+
+Three switches, all in the same box.
+
+| Field | Value | Note |
+|---|---|---|
+| Allow SSH traffic from | **Anywhere 0.0.0.0/0** | Not My IP. EC2 Instance Connect comes from AWS, not from your laptop. |
+| Allow HTTPS traffic from the internet | **On** |  |
+| Allow HTTP traffic from the internet | **On** | This is the one that lets your browser reach the page. |
+
+<Screenshot src="/shots/06-network-settings.webp" width={1500} height={826} alt="SSH from Anywhere, and both web traffic switches on." caption="SSH from Anywhere, and both web traffic switches on." />
+
+</Step>
+<Step>
+
+### Choose Launch instance, then wait
+
+Open Instances and select yours. You want Instance state: Running and Status check: 2/2 checks passed. It takes a minute or two.
+
+<Screenshot src="/shots/07-launch-success.webp" width={1500} height={828} alt="The green banner means the instance is starting, not ready. Open Instances and watch the state." caption="The green banner means the instance is starting, not ready. Open Instances and watch the state." />
+
+</Step>
+<Step>
+
+### Copy the Public IPv4 address
+
+Details tab, Instance summary. You will paste it into your browser twice today. It is the address of your server on the public internet.
+
+<Screenshot src="/shots/08-instance-details.webp" width={1500} height={828} alt="Instance summary. Public IPv4 address is the one you want; the private one (172.31.x.x) is not reachable from your laptop." caption="Instance summary. Public IPv4 address is the one you want; the private one (172.31.x.x) is not reachable from your laptop." />
+
+</Step>
+</Steps>
+
+<Callout type="success" title="Checkpoint">
+Instance is Running with 2/2 checks passed, and the Public IPv4 address is on your clipboard or written down.
+</Callout>
+
+Next: [Part 2: Create an Amazon RDS DB instance](/docs/web-server-and-rds/2-create-rds).

@@ -1,0 +1,36 @@
+---
+title: "Extend it"
+description: "Six add-ons once SamplePage.php saves data, worth one or two points each."
+---
+
+Once your sample page saves data, try these. At a club workshop, team up in 2s or 3s and score as many points as you can in 20 minutes. On your own, do them in any order.
+
+## Make the page yours
+
+**1 point.** Edit SamplePage.php: a real title, your team name, some CSS. Refresh and the data is still there, because it lives in RDS, not on the page.
+
+## Delete the stray echo
+
+**1 point.** Find echo "Forming Query"; in AddEmployee and remove the line. Reload and add a row: the text is gone. You just patched AWS's sample code.
+
+## Add a second page
+
+**1 point.** Create about.php (or .html) in /var/www/html and link to it from the sample page.
+
+## Read the security groups
+
+**2 points.** In the EC2 and RDS consoles, find the rule that lets your server reach the database on port 5432. Explain to a helper why your laptop can't connect to the database directly.
+
+## Query the database yourself
+
+**2 points.** From the instance, connect with psql and SELECT the rows you added through the page.
+
+[Connecting with psql (AWS docs)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToPostgreSQLInstance.psql.html)
+
+## Give the instance a role
+
+**2 points.** Create an S3 bucket, attach an IAM role to the instance, and read a file from it with the AWS CLI, with no access keys anywhere.
+
+[IAM roles for EC2 (AWS docs)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
+
+When you are done, [tear it down](/docs/web-server-and-rds/teardown).

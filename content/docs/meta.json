@@ -1,0 +1,15 @@
+{
+  "title": "AWS 101",
+  "pages": [
+    "index",
+    "---Lessons---",
+    "web-server-and-rds",
+    "app-to-rds",
+    "---Study notes---",
+    "concepts",
+    "architecture",
+    "certification",
+    "---Club---",
+    "contributing"
+  ]
+}

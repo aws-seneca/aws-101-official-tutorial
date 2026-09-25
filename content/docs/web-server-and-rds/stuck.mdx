@@ -1,0 +1,23 @@
+---
+title: "Stuck?"
+description: "What you see, and what to do about it."
+---
+
+Check the region first, then this list, then ask for help.
+
+| What you see | What to do |
+|---|---|
+| My instance or database disappeared | Wrong region. Top right of the console → Canada (Central). |
+| t3.micro doesn't say free tier eligible | Check the region. Older accounts (before July 2025) are on the legacy free tier; t3.micro still works and costs cents. |
+| The public IP won't load | Use http:// (not https://) and the Public IPv4 address. Then check the instance's security group has an HTTP rule. |
+| EC2 Instance Connect fails | The SSH rule is set to My IP, or the instance is still starting. Allow SSH from anywhere, wait for 2/2 checks. |
+| I get the Apache test page, not my page | The test page only shows while /var/www/html is empty. Add /SamplePage.php to the address. |
+| groups doesn't list apache | The usermod only takes effect in a new login. Close the Instance Connect tab and connect again. |
+| dnf can't find php-pgsql or postgresql15 | The instance isn't Amazon Linux 2023. Run cat /etc/system-release; relaunch with the AL2023 AMI. |
+| SamplePage.php says “Failed to connect to PostgreSQL” | The page ran and the database refused it. Check the endpoint (no :5432), username tutorial_user, your password and database name sample in /var/www/inc/dbinfo.inc. A space in the password also breaks it. Then check the database is Available and that you used Connect to an EC2 compute resource in Part 2. |
+| I still have your-db-endpoint and your master password in dbinfo.inc | That is the single most common way to lose twenty minutes. Paste your real endpoint and the password you wrote down in Part 2. If you never set one because the console generated it, you cannot read it back: RDS → your database → Modify → set a new master password. |
+| The heading appears and then the page stops | A fatal error, before PHP could print anything useful. Either php-pgsql is missing, so run sudo dnf install -y php-pgsql and sudo systemctl restart httpd, or dbinfo.inc is not at /var/www/inc/dbinfo.inc — check the spelling and that you made it in /var/www, not /var/www/html. |
+| The page shows PHP source code instead of running | PHP isn't installed or Apache wasn't restarted: sudo systemctl restart httpd. |
+| The page prints “Forming Query” | Nothing is wrong. It is a leftover echo in AWS's sample code. Deleting it is worth a point in the challenge. |
+
+<Screenshot src="/shots/17-page-broken.webp" width={1500} height={822} alt="The heading rendered and then nothing. PHP hit a fatal error, so it never got as far as printing a connection message: the PostgreSQL extension is missing, or dbinfo.inc is not where the page looks for it." caption="The heading rendered and then nothing. PHP hit a fatal error, so it never got as far as printing a connection message: the PostgreSQL extension is missing, or dbinfo.inc is not where the page looks for it." />

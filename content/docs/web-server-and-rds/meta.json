@@ -1,0 +1,12 @@
+{
+  "title": "Lesson 1: Web server and RDS",
+  "pages": [
+    "index",
+    "1-launch-ec2",
+    "2-create-rds",
+    "3-web-server",
+    "challenge",
+    "stuck",
+    "teardown"
+  ]
+}

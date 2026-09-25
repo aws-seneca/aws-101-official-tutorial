@@ -1,32 +1,33 @@
-# AWS 101 Workshop
+# AWS 101 Study Guide
 
-AWS 101 workshop from the AWS Student Builder Group at Seneca Polytechnic, Wednesday, October 7, 2026.
+The AWS Student Builder Group at Seneca's study notes, published at https://aws-seneca.github.io/aws-101-official-tutorial/.
 
-Attendees build a real web app in the AWS Console by following AWS's official tutorial, [Create a web server and an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html): an EC2 instance on Amazon Linux 2023, an RDS PostgreSQL database, and Apache with PHP serving AWS's `SamplePage.php`, which saves to the database. Teams then extend it, and everyone deletes their resources before leaving.
+- **Lesson 1: Web server and RDS**: AWS's official tutorial, [Create a web server and an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html), step by step: an EC2 instance on Amazon Linux 2023, an RDS PostgreSQL database, and Apache with PHP serving AWS's `SamplePage.php`. Adapted for students (region, `t3.micro`, EC2 Instance Connect, PostgreSQL, a simple password), with annotated console screenshots, extensions, a stuck list, and teardown.
+- **Lesson 2: App to RDS**: the hands-on AWS 101 workshop (October 7, 2026). Deploy [aws-seneca/aws-101-workshop](https://github.com/aws-seneca/aws-101-workshop) to EC2, then move its data to RDS with one line of configuration.
+- **Concepts**: study notes on EC2, security groups and VPC, RDS, IAM, S3, and costs.
+- **Architecture**: the same app from one server to a managed database, a load-balanced fleet, and serverless.
 
-The workshop is guided in person. This repo is the companion site at https://aws-seneca.github.io/aws-101-official-tutorial/, which carries the whole walkthrough rather than only linking to it:
+Concept and architecture pages start as outlines; club members fill them in.
 
-- A diagram of what gets built, and the two security-group rules that make it work
-- Every step of all three parts, with the console values to type and the commands ready to copy
-- A progress tracker across the three parts, saved in the browser
-- Annotated screenshots of each console screen
-- The five places the day differs from the tutorial text (region, `t3.micro` instead of `t2.micro`, EC2 Instance Connect instead of an SSH key, PostgreSQL, a simple password)
-- The team challenge, what to do when stuck, teardown steps, and how the AWS free plan works since July 2025
+## Write or edit a page
 
-All the text lives in [`lib/content.ts`](lib/content.ts). The screenshots in [`public/shots/`](public/shots) come from a dry run of the workshop, with account numbers, addresses and endpoints painted out and the thing to look at marked: orange for what to click, green for a value that is already right, red where the dry run made a different choice from the one we make on the day.
-
-## Run it locally
+Pages are MDX files in [`content/docs`](content/docs). Each folder's `meta.json` sets the sidebar order. Full guide: the site's **Contributing** page.
 
 ```bash
 npm install
-npm run dev
+npm run dev        # http://localhost:3000
 ```
 
-## Deploy
+## Build
 
-Pushing to `main` publishes to GitHub Pages through [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). The workflow sets `BASE_PATH`, which the config also exposes to the client as `NEXT_PUBLIC_BASE_PATH` so links to files in `public/` resolve under the repo path.
+```bash
+npm run build      # static site in out/
+```
 
-## Before the event
+Pushing to `main` deploys to GitHub Pages (`.github/workflows/deploy.yml`), which builds with `BASE_PATH=/aws-101-official-tutorial`.
 
-- **Re-run the dry run on the workshop settings.** The current screenshots were taken on MySQL, in `us-east-1`, over SSH with a key pair. The workshop runs PostgreSQL, in `ca-central-1`, over EC2 Instance Connect, and the dry run never reached a working `SamplePage.php`. Five screenshots are labelled in red because of this and should be retaken.
-- Re-check https://aws.amazon.com/free/ and the tutorial itself. AWS updates both.
+## Screenshots
+
+[`public/shots/`](public/shots) holds Lesson 1's console screenshots, from a dry run with account numbers, addresses and endpoints painted out: orange for what to click, green for a value that is already right, red where the dry run made a different choice from the lesson. That dry run used MySQL, `us-east-1`, and SSH with a key pair, and never reached a working `SamplePage.php`, so the five red-labelled shots should be retaken on the lesson's settings.
+
+Built with [Fumadocs](https://fumadocs.dev) on Next.js. Lesson 1 started as a single-page React site; that version is in the git history at `d88559a`.

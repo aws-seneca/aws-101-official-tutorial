@@ -1,0 +1,26 @@
+---
+title: "Lesson 2: Deploy an app and move it to RDS"
+description: Move a live app from a file on one server to a managed database, without writing code.
+---
+
+This is the hands-on part of the club's AWS 101 workshop on October 7, 2026. It builds on [Lesson 1](/docs/web-server-and-rds): the same EC2 and RDS pair, with a real app instead of a sample page.
+
+You deploy a small sign-up app to EC2, see why keeping data on the server is fragile, then move it to Amazon RDS. You change **no code**: one line of configuration does it.
+
+```text
+Part 1:  Browser ──> EC2 (the app) ──> signups.json on the instance's disk
+Part 3:  Browser ──> EC2 (the app) ──> RDS PostgreSQL in a private subnet
+```
+
+| Part | What you do | Time |
+|---|---|---|
+| [1. App on EC2](/docs/app-to-rds/1-app-on-ec2) | Launch a server, install and start the app | 25 min |
+| [2. Create RDS](/docs/app-to-rds/2-create-rds) | Create a managed PostgreSQL database that only your server can reach | 20 min |
+| [3. Connect the app](/docs/app-to-rds/3-connect-the-app) | Add one line of configuration, restart, prove the data moved | 15 min |
+| [Teardown](/docs/app-to-rds/teardown) | Delete everything so nothing keeps billing | 10 min |
+
+## Before you start
+
+- An AWS account on the **free plan**. A card is needed to sign up; nothing is billed on the free plan unless you upgrade.
+- Pick **one region** for everything, for example `ca-central-1` (Canada Central).
+- A laptop with a web browser. No local tools needed; you work in the AWS Console and in a browser terminal.
