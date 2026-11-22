@@ -1,9 +1,10 @@
-import { Geist } from 'next/font/google';
+import { Geist, JetBrains_Mono } from 'next/font/google';
 import type { Metadata, Viewport } from 'next';
 import { Provider } from '@/components/provider';
 import './global.css';
 
 const geist = Geist({ subsets: ['latin'] });
+const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono' });
 
 const description =
   'The AWS Student Builder Group at Seneca study notes: hands-on AWS lessons, AWS concepts, and solution architecture.';
@@ -32,7 +33,7 @@ export const viewport: Viewport = {
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={geist.className} suppressHydrationWarning>
+    <html lang="en" className={`${geist.className} ${mono.variable}`} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
         <Provider>{children}</Provider>
       </body>

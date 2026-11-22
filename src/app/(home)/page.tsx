@@ -54,7 +54,7 @@ export default function HomePage() {
       <div className="mt-16 grid gap-4 sm:grid-cols-2">
         {sections.map(({ href, icon: Icon, title, body }) => (
           <Link key={href} href={href} className="group rounded-xl border bg-fd-card p-5 transition-colors hover:bg-fd-muted/60">
-            <Icon className="size-5 text-[#AD5DFE]" aria-hidden />
+            <Icon className="size-5 text-brand" aria-hidden />
             <h2 className="mt-4 font-semibold">{title}</h2>
             <p className="mt-1.5 text-sm leading-relaxed text-fd-muted-foreground">{body}</p>
             <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium">
