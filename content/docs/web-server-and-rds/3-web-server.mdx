@@ -10,14 +10,14 @@ AWS's version of this part: [Install a web server on your EC2 instance](https://
 <Steps>
 <Step>
 
-### Connect to the instance in your browser
+## Connect to the instance in your browser
 
 EC2 → Instances → select yours → Connect → the EC2 Instance Connect tab → Connect. A black terminal opens in a new tab. The tutorial uses SSH and a key file; we do not need either.
 
 </Step>
 <Step>
 
-### Update the instance
+## Update the instance
 
 ```bash
 sudo dnf update -y
@@ -30,7 +30,7 @@ Either a list of updates, or Nothing to do. Both are fine.
 </Step>
 <Step>
 
-### Install Apache, PHP and the PostgreSQL client
+## Install Apache, PHP and the PostgreSQL client
 
 ```bash
 sudo dnf install -y httpd php php-pgsql postgresql15
@@ -45,7 +45,7 @@ Complete! at the end. If dnf says it cannot find php-pgsql, the instance is not 
 </Step>
 <Step>
 
-### Start Apache, and make it start on every boot
+## Start Apache, and make it start on every boot
 
 ```bash
 sudo systemctl start httpd
@@ -59,14 +59,14 @@ enable prints a line about creating a symlink.
 </Step>
 <Step>
 
-### Check it in your browser
+## Check it in your browser
 
 Go to `http://<your public IPv4>` — http, not https, and no path. You should get the Apache test page. That page only shows while /var/www/html is empty, so it disappears later. That is normal.
 
 </Step>
 <Step>
 
-### Give yourself permission to edit the web root
+## Give yourself permission to edit the web root
 
 Group membership only applies to a new login. Close the Instance Connect tab and connect again from the console.
 
@@ -77,7 +77,7 @@ sudo usermod -a -G apache ec2-user
 </Step>
 <Step>
 
-### Back in a fresh terminal, confirm the group and fix the permissions
+## Back in a fresh terminal, confirm the group and fix the permissions
 
 ```bash
 groups
@@ -94,7 +94,7 @@ groups prints apache in the list: ec2-user adm wheel apache systemd-journal. If 
 </Step>
 <Step>
 
-### Create the database credentials file, outside the web root
+## Create the database credentials file, outside the web root
 
 It lives in /var/www/inc, not /var/www/html, so the web server can read it but nobody can load it in a browser.
 
@@ -109,7 +109,7 @@ nano dbinfo.inc
 </Step>
 <Step>
 
-### Paste this into nano, with your own endpoint and password
+## Paste this into nano, with your own endpoint and password
 
 Paste with Ctrl+V (Cmd+V on a Mac). Replace your-db-endpoint with the RDS endpoint from Part 2 and your master password with your password. Save and close with Ctrl+S then Ctrl+X.
 
@@ -126,7 +126,7 @@ define('DB_DATABASE', 'sample');
 </Step>
 <Step>
 
-### Create the page itself
+## Create the page itself
 
 ```bash
 cd /var/www/html
@@ -137,7 +137,7 @@ nano SamplePage.php
 </Step>
 <Step>
 
-### Paste AWS's sample page, PostgreSQL version
+## Paste AWS's sample page, PostgreSQL version
 
 Copy this whole block. It is the PostgreSQL version from the tutorial, unchanged. Save and close: Ctrl+S then Ctrl+X.
 
@@ -265,7 +265,7 @@ function TableExists($tableName, $connection, $dbName) {
 </Step>
 <Step>
 
-### Open it
+## Open it
 
 `http://<your public IPv4>/SamplePage.php`. Type a name and an address, choose Add Data, and the row appears in the table below the form.
 
