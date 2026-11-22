@@ -26,6 +26,8 @@ html > body[data-scroll-locked] {
   --color-fd-primary: #7b2fe0; /* 6.3:1 with white text, 5.8:1 as text on the page */
   --color-fd-primary-foreground: #ffffff;
   --color-fd-ring: #7b2fe0;
+  /* Fumadocs' default #737373 is 4.2 to 4.3:1 on the light page and cards. */
+  --color-fd-muted-foreground: #5e5e5e;
 }
 
 .dark {
