@@ -61,3 +61,13 @@ h3,
 .font-heading {
   font-family: var(--font-heading);
 }
+
+/*
+ * Code comments. The Shiki GitHub themes colour comments #6A737D, which is
+ * 3.2:1 on the dark code background and 4.1:1 on the light one. Inline styles
+ * set the colour, so this override needs !important.
+ */
+.shiki span[style*='--shiki-dark:#6A737D'] {
+  --shiki-dark: #9aa3ad !important; /* 6:1 on #1E2530 */
+  --shiki-light: #57606a !important; /* 5.5:1 on the light code background */
+}
