@@ -9,7 +9,8 @@ const description =
   'The AWS Student Builder Group at Seneca study notes: hands-on AWS lessons, AWS concepts, and solution architecture.';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://aws-seneca.github.io/aws-101-official-tutorial/'),
+  // Origin only: Next adds the Pages base path to image URLs itself.
+  metadataBase: new URL('https://aws-seneca.github.io'),
   title: { default: 'AWS 101 Study Guide', template: '%s · AWS 101 Study Guide' },
   description,
   openGraph: {
