@@ -1,0 +1,38 @@
+---
+title: "3. Scaling"
+description: Two ways to handle more traffic. Make the server bigger, or add more servers.
+---
+
+The app now keeps its data in a database. The next problem is load: one server can only do so much. There are two ways to add capacity.
+
+```text
+Vertical: one server, made bigger
+
+  [t3.micro: 2 vCPU, 1 GiB] ──resize──> [t3.large: 2 vCPU, 8 GiB]
+
+Horizontal: more servers behind a load balancer
+
+                       ┌──> EC2 ──┐
+  Browser ──> Load  ───┼──> EC2 ──┼──> database
+              balancer └──> EC2 ──┘
+```
+
+| | [Vertical scaling](/docs/architecture/3-scaling/vertical) | [Horizontal scaling](/docs/architecture/3-scaling/horizontal) |
+|---|---|---|
+| What you do | Change to a bigger instance type or DB instance class | Run more instances and spread traffic across them |
+| Code changes | None | The app must be stateless: no data or sessions on the server |
+| Downtime | A short outage while the instance restarts | None, if done right |
+| Limit | The biggest instance type | Much higher |
+| Survives a server failing | No, there is still one server | Yes, the others keep serving |
+
+## Which one first
+
+Start vertical: it is one setting and no code change, and it buys time. Move to horizontal when you need to survive a server failing, when traffic swings through the day, or when the biggest instance is not enough.
+
+Databases scale both ways too. A bigger DB instance class is vertical. Read replicas, which take read traffic off the primary, are horizontal.
+
+## Official docs
+
+- [Change the instance type](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-resize.html)
+- [What is Amazon EC2 Auto Scaling?](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html)
+- [AWS Well-Architected Framework: Reliability pillar](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html)

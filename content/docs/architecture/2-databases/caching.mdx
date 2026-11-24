@@ -1,0 +1,34 @@
+---
+title: Caching (ElastiCache)
+description: Keep the answers to common reads in memory, in front of the database.
+---
+
+A cache keeps copies of data in memory so the app does not ask the database the same question again and again. Amazon ElastiCache is the managed cache on AWS. It runs Valkey, Redis OSS or Memcached.
+
+## The pattern
+
+```text
+app ──1. ask the cache──> ElastiCache
+  │  found? use it. Not found?
+  └─2. ask the database──> RDS ──3. store the answer in the cache
+```
+
+This is called cache-aside, or lazy loading. Give cached items an expiry time so stale answers clear on their own.
+
+## When it helps
+
+- The same reads happen far more often than writes: a product page, a leaderboard, a count of sign-ups.
+- The database is the bottleneck and you want to take load off it before you resize it.
+- Sessions for a [horizontally scaled](/docs/architecture/3-scaling/horizontal) app: put them in the cache so any server can handle any request.
+
+## When it does not
+
+- The data changes on almost every read, or every read must be the latest value.
+- The app is small and the database is not under load. A cache is one more thing to run.
+
+ElastiCache Serverless sets up a cache without choosing node sizes and scales it for you. Check current pricing before you create one, and delete it when you finish.
+
+## Official docs
+
+- [What is Amazon ElastiCache?](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html)
+- [Caching strategies](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Strategies.html)

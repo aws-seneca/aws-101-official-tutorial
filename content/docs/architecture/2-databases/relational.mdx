@@ -1,0 +1,50 @@
+---
+title: Relational (RDS and Aurora)
+description: Tables, SQL and joins, run for you by Amazon RDS. MySQL, PostgreSQL, and Aurora.
+---
+
+A relational database stores data in tables with fixed columns, and you query it with SQL. It is the right default when the data has a clear shape and the parts relate to each other: sign-ups, orders, users.
+
+## Amazon RDS: the database, run for you
+
+Amazon RDS runs the database engine on servers AWS manages. You pick the engine and the size; RDS handles the rest of the routine work.
+
+Engines: MySQL, PostgreSQL, MariaDB, Oracle, SQL Server and Db2, plus Aurora MySQL and Aurora PostgreSQL.
+
+Both lessons use RDS for PostgreSQL. [Lesson 1, Part 2](/docs/web-server-and-rds/2-create-rds) creates one by hand. [Lesson 2, Part 2](/docs/app-to-rds/2-create-rds) creates one and connects it to the app's instance in one step.
+
+## Managed or run it yourself on EC2
+
+You could install PostgreSQL on the same EC2 instance as the app. It works, but you own every job below. With RDS, AWS does them.
+
+| Job | On your own EC2 instance | On Amazon RDS |
+|---|---|---|
+| Install and patch the engine | You | RDS |
+| Backups | You write a script and test restores | Automated backups in a window you choose, and restore to any point in time within the retention period |
+| A spare copy in another Availability Zone | You build replication | Multi-AZ: a standby in another Availability Zone, with automatic failover |
+| Storage running out | You resize disks | You raise the allocated storage without downtime |
+
+What you give up: no shell access to the database server, and only the engines and versions RDS offers.
+
+## Backups and snapshots
+
+- **Automated backups.** RDS snapshots the whole storage volume during your backup window and keeps transaction logs, so you can restore to any point in the retention period. After the first snapshot, each one only stores what changed.
+- **Manual snapshots.** Taken when you ask, kept until you delete them. Take one before a risky change.
+
+## Multi-AZ
+
+A Multi-AZ deployment keeps a standby copy in a second Availability Zone, kept in sync. If the primary fails, RDS fails over to the standby automatically. You pay for the standby instance too, so it costs more than Single-AZ. For a club demo, Single-AZ is fine. For anything people depend on, use Multi-AZ.
+
+## Amazon Aurora
+
+Aurora is AWS's own MySQL- and PostgreSQL-compatible engine, run through RDS. The difference is storage: Aurora keeps your data in one cluster volume that is copied across three Availability Zones (six copies) and grows on its own as the data grows. Read replicas share that same storage instead of copying it.
+
+Choose Aurora when you need more availability or read capacity than a single RDS instance gives. Choose plain RDS for MySQL or PostgreSQL when you want the standard engine and the smallest bill. Check current pricing before you create an Aurora cluster.
+
+## Official docs
+
+- [What is Amazon RDS?](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html)
+- [Introduction to backups](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html)
+- [Multi-AZ DB instance deployments](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html)
+- [Amazon Aurora storage](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.StorageReliability.html)
+- [Amazon RDS features](https://aws.amazon.com/rds/features/)

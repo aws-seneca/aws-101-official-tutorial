@@ -1,0 +1,8 @@
+{
+  "title": "2. Databases",
+  "pages": [
+    "relational",
+    "nosql",
+    "caching"
+  ]
+}

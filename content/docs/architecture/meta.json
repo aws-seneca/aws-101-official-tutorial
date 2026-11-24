@@ -1,10 +1,9 @@
 {
   "title": "Architecture",
   "pages": [
-    "index",
     "1-single-server",
-    "2-managed-database",
-    "3-scaling-out",
+    "2-databases",
+    "3-scaling",
     "4-serverless"
   ]
 }

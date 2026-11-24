@@ -1,0 +1,39 @@
+---
+title: "2. Databases"
+description: Move the data off the server, then pick the kind of database that fits it.
+---
+
+Design 1 kept sign-ups in a file on the server. The fix is to give the data its own home: a database that outlives any one server. AWS runs the database for you, so you choose the kind and the size, not the hardware.
+
+```text
+Browser ──HTTP──> EC2 instance (public subnet)
+                   └─ the app ──SQL, TLS──> database (private subnet)
+```
+
+This is where both lessons end: the app on EC2, the data in Amazon RDS.
+
+## Which kind of database
+
+| You have | Reach for | Page |
+|---|---|---|
+| Rows with a fixed shape, joins between tables, SQL | A relational database: Amazon RDS (MySQL, PostgreSQL and others) or Amazon Aurora | [Relational](/docs/architecture/2-databases/relational) |
+| Lookups by a known key, very high traffic, a flexible shape | A NoSQL database: Amazon DynamoDB | [NoSQL](/docs/architecture/2-databases/nosql) |
+| The same reads over and over, and the database is the bottleneck | A cache in front of the database: Amazon ElastiCache | [Caching](/docs/architecture/2-databases/caching) |
+
+For the sign-up app, a relational database is the natural first choice: the data is a small table with a fixed shape, and SQL is what most people learn first. The other two are worth knowing because the same question comes up in every design review: what shape is the data, and how is it read?
+
+## What moving the data fixes
+
+- **The data outlives the server.** Terminate the instance and the sign-ups are still there.
+- **The app server becomes stateless.** It holds no data of its own, so you can run more than one. That is what makes [3. Scaling](/docs/architecture/3-scaling) possible.
+
+## What is still fragile
+
+- One EC2 instance. If it stops, the site stops.
+- In the lessons, the database password sits in a `.env` file on the server. AWS Secrets Manager with an IAM role is the next step up.
+
+## Official docs
+
+- [What is Amazon RDS?](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html)
+- [What is Amazon DynamoDB?](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html)
+- [What is Amazon ElastiCache?](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html)
