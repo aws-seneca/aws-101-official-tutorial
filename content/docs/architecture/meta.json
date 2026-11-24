@@ -2,8 +2,13 @@
   "title": "Architecture",
   "pages": [
     "1-single-server",
-    "2-databases",
+    "2-database-tier",
     "3-scaling",
-    "4-serverless"
+    "4-high-availability",
+    "5-three-tier",
+    "6-static-site",
+    "7-containers",
+    "8-event-driven",
+    "9-serverless"
   ]
 }

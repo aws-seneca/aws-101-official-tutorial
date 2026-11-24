@@ -1,27 +1,62 @@
 ---
-title: "4. Serverless"
-description: "No servers to manage: functions, a managed API, and a serverless database."
+title: "9. Serverless"
+description: "No servers to manage: a static front end, functions behind an API, and a serverless database."
 ---
 
-```text
-Browser ──> S3 + CloudFront (the page)
-        └─> API Gateway ──> Lambda (add, list, delete) ──> DynamoDB
-```
+<Flow
+  title="The sign-up app as a serverless app"
+  desc="CloudFront serves the page from a private S3 bucket. The page calls Amazon API Gateway. API Gateway invokes Lambda functions to add, list and delete sign-ups. The functions read and write a DynamoDB table. Nothing runs, and almost nothing is billed, while nobody is using it."
+  width={700}
+  height={240}
+  nodes={[
+    { id: 'u', x: 10, y: 92, w: 120, label: 'Browser', tone: 'client' },
+    { id: 'cf', x: 185, y: 15, w: 150, label: 'CloudFront + S3', sub: 'the page', tone: 'edge' },
+    { id: 'api', x: 185, y: 165, w: 150, label: 'API Gateway', sub: '/signups', tone: 'net' },
+    { id: 'fn', x: 375, y: 165, w: 140, label: 'Lambda', sub: 'add, list, delete', tone: 'compute' },
+    { id: 'ddb', x: 555, y: 165, w: 135, label: 'DynamoDB', sub: 'on-demand', tone: 'db' },
+  ]}
+  edges={[
+    { from: 'u', to: 'cf', label: 'page' },
+    { from: 'u', to: 'api', label: 'fetch()' },
+    { from: 'api', to: 'fn' },
+    { from: 'fn', to: 'ddb' },
+  ]}
+/>
 
-<Callout title="Architecture pages grow over time">
-Each page describes one design for the same sign-up app: the diagram, what it fixes, what it costs you, and when to use it. Help write them: see [Contributing](/docs/contributing).
-</Callout>
+Serverless means you never size, patch or keep running a server. You upload code and data; AWS runs them when requests arrive and bills per request.
 
-## What this page will cover
+## How the sign-up app would look
 
-- What "serverless" means, and what you give up
-- The same three operations as Lambda functions behind API Gateway
-- DynamoDB versus PostgreSQL for this data
-- Pay per request: what the sign-up app would cost at club scale
-- When serverless is the wrong choice
+- **The page**: static files in S3, served by CloudFront. See [Static site](/docs/architecture/6-static-site).
+- **The API**: API Gateway turns `POST /signups` and `GET /signups` into calls to Lambda functions.
+- **The code**: small Lambda functions, one per operation.
+- **The data**: a DynamoDB table in on-demand mode. See [NoSQL (DynamoDB)](/docs/concepts/databases/nosql).
+
+## When to use it
+
+- Spiky or low traffic: a club app busy on event night and idle otherwise.
+- Small APIs and glue between services.
+- Pairs well with [Event-driven](/docs/architecture/8-event-driven) designs.
+
+## When it is the wrong choice
+
+- Long-running work (Lambda has a time limit per call), or steady heavy traffic where a server is cheaper.
+- An existing app built around a server and a relational database. Moving it means rewriting it.
+
+## Trade-offs
+
+| | |
+|---|---|
+| Cost | Pay per request; close to nothing when idle |
+| Complexity | A different way of writing apps: functions, events, NoSQL data modelling |
+| Scaling | Automatic, per request |
+
+## Read next
+
+[NoSQL (DynamoDB)](/docs/concepts/databases/nosql), [CDN with CloudFront](/docs/concepts/cloudfront), [IAM](/docs/concepts/iam) (each function gets a role).
 
 ## Official docs
 
-- [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
-- [Amazon API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html)
-- [Amazon DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html)
+- [What is AWS Lambda?](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
+- [What is Amazon API Gateway?](https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html)
+- [What is Amazon DynamoDB?](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html)

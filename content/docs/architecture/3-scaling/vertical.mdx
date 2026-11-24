@@ -31,6 +31,19 @@ Things to know:
 - With **Multi-AZ**, RDS resizes the standby first, fails over to it, then resizes the old primary. The outage shrinks to the failover.
 - **Storage is separate.** You can raise allocated storage without downtime.
 
+<Flow
+  title="Resizing an RDS database with Multi-AZ"
+  desc="With Multi-AZ, RDS resizes the standby first, then fails over to it, then resizes the old primary. The app only sees the short failover instead of the whole resize."
+  width={680}
+  height={110}
+  nodes={[
+    { id: 's', x: 10, y: 25, w: 190, label: '1. Resize standby', tone: 'db' },
+    { id: 'f', x: 245, y: 25, w: 190, label: '2. Fail over', sub: 'the only outage', tone: 'ops' },
+    { id: 'p', x: 480, y: 25, w: 190, label: '3. Resize old primary', tone: 'db' },
+  ]}
+  edges={[{ from: 's', to: 'f' }, { from: 'f', to: 'p' }]}
+/>
+
 ## The limits
 
 - There is a biggest instance. Past that, vertical scaling stops.
@@ -38,6 +51,10 @@ Things to know:
 - Big instances cost more per hour, all the time, even at 3 AM when nobody is visiting.
 
 When you hit any of these, go [horizontal](/docs/architecture/3-scaling/horizontal).
+
+## Read next
+
+[EC2](/docs/concepts/ec2), [Relational databases](/docs/concepts/databases/relational), [CloudWatch](/docs/concepts/cloudwatch) (how you know you need a bigger instance).
 
 ## Official docs
 

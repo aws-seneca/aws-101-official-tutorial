@@ -1,0 +1,57 @@
+---
+title: "7. Containers on ECS"
+description: The same app as a container image, run by ECS on Fargate. No instances to manage.
+---
+
+<Flow
+  title="The sign-up app on ECS with Fargate"
+  desc="A container image of the app is pushed to Amazon ECR. An ECS service runs two copies of it as Fargate tasks in two Availability Zones, behind an Application Load Balancer. The tasks connect to an RDS database. Logs go to CloudWatch."
+  width={700}
+  height={280}
+  groups={[{ x: 290, y: 10, w: 200, h: 260, label: 'ECS service on Fargate', tone: 'vpc' }]}
+  nodes={[
+    { id: 'ecr', x: 10, y: 10, w: 150, label: 'ECR', sub: 'container image', tone: 'storage' },
+    { id: 'u', x: 10, y: 112, w: 150, label: 'Browsers', tone: 'client' },
+    { id: 'lb', x: 10, y: 205, w: 150, label: 'ALB', tone: 'net' },
+    { id: 't1', x: 315, y: 60, label: 'Task', sub: 'AZ a', tone: 'compute' },
+    { id: 't2', x: 315, y: 170, label: 'Task', sub: 'AZ b', tone: 'compute' },
+    { id: 'db', x: 540, y: 60, label: 'RDS', tone: 'db' },
+    { id: 'cw', x: 540, y: 170, label: 'CloudWatch', sub: 'logs', tone: 'ops' },
+  ]}
+  edges={[
+    { from: 'u', to: 'lb', via: 'v' },
+    { from: 'lb', to: 't2' },
+    { from: 'lb', to: 't1' },
+    { from: 'ecr', to: 't1', label: 'pull', dashed: true },
+    { from: 't1', to: 'db' },
+    { from: 't2', to: 'cw' },
+  ]}
+/>
+
+Package the app as a container image once, then let Amazon ECS run as many copies as you ask for. With AWS Fargate there are no EC2 instances to patch or size: you set CPU and memory per task.
+
+The Lesson 2 app already has a `Dockerfile`, so this design is the same app with a different way of running it.
+
+## When to use it
+
+- You want the same image on your laptop, in CI and in AWS.
+- Several small services, each in its own container.
+- You want horizontal scaling without managing instances or AMIs.
+
+## Trade-offs
+
+| | |
+|---|---|
+| Cost | Pay per task for CPU and memory while it runs, plus the load balancer |
+| Complexity | You need to learn images, registries and task definitions |
+| Scaling | ECS service auto scaling adds or removes tasks |
+
+## Read next
+
+[Containers (ECS and Fargate)](/docs/concepts/containers), [Load balancing](/docs/concepts/load-balancing), [CloudWatch](/docs/concepts/cloudwatch).
+
+## Official docs
+
+- [What is Amazon ECS?](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html)
+- [AWS Fargate for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html)
+- [Amazon ECS services](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html)

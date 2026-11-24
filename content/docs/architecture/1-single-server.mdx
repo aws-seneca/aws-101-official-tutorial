@@ -1,20 +1,38 @@
 ---
 title: "1. Single server"
-description: Everything on one EC2 instance. Where the workshop starts.
+description: Everything on one EC2 instance. Where the lessons start.
 ---
 
-```text
-Browser ──HTTP──> EC2 instance
-                   ├─ the app (Next.js)
-                   └─ signups.json on the instance's disk
-```
+<Flow
+  title="The app and its data on one EC2 instance"
+  desc="A browser connects over HTTP to one EC2 instance. The instance runs the app and keeps sign-ups in a file, signups.json, on its own disk. There is nothing else."
+  width={640}
+  height={170}
+  groups={[{ x: 230, y: 10, w: 400, h: 150, label: 'One EC2 instance', tone: 'public' }]}
+  nodes={[
+    { id: 'b', x: 10, y: 57, w: 150, label: 'Browser', tone: 'client' },
+    { id: 'app', x: 260, y: 57, label: 'The app', sub: 'Next.js', tone: 'compute' },
+    { id: 'f', x: 450, y: 57, w: 160, label: 'signups.json', sub: "on the instance's disk", tone: 'storage' },
+  ]}
+  edges={[
+    { from: 'b', to: 'app', label: 'HTTP' },
+    { from: 'app', to: 'f' },
+  ]}
+/>
 
-This is the workshop's Part 1.
+This is Part 1 of [Lesson 2](/docs/app-to-rds/1-app-on-ec2).
 
-## What works
+## When to use it
 
-- Simple: one thing to launch, one thing to look at.
-- Cheap, and fine for a demo.
+A demo, a prototype, a personal project. Anything where losing the data is fine.
+
+## Trade-offs
+
+| | |
+|---|---|
+| Cost | Lowest: one small instance |
+| Complexity | Lowest: one thing to launch and look at |
+| Scaling | Only by making the instance bigger |
 
 ## What breaks
 
@@ -22,4 +40,12 @@ This is the workshop's Part 1.
 - **It cannot scale out.** A second instance would have its own `signups.json`, so the two would disagree.
 - **Concurrent writes can clash.** Two sign-ups at the same moment can overwrite each other.
 
-[2. Databases](/docs/architecture/2-databases) fixes the first two by moving the data off the server.
+[2. Database tier](/docs/architecture/2-database-tier) fixes the first two by moving the data off the server.
+
+## Read next
+
+[EC2](/docs/concepts/ec2), [Security groups and VPC](/docs/concepts/security-groups-and-vpc).
+
+## Official docs
+
+- [What is Amazon EC2?](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html)
