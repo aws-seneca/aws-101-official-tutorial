@@ -1,0 +1,46 @@
+---
+title: Monitoring with CloudWatch
+description: Metrics, logs and alarms. How you find out something is wrong before your users tell you.
+---
+
+<Flow
+  title="Metrics and logs flow into CloudWatch, alarms act on them"
+  desc="EC2, RDS and the load balancer send metrics to CloudWatch automatically. The app sends its logs. A CloudWatch alarm watches a metric against a threshold, such as CPU above 80 percent for five minutes, and when it trips it emails the team through SNS or tells Auto Scaling to add an instance."
+  width={700}
+  height={250}
+  nodes={[
+    { id: 'ec2', x: 10, y: 10, w: 150, label: 'EC2', sub: 'CPU, network', tone: 'compute' },
+    { id: 'rds', x: 10, y: 95, w: 150, label: 'RDS', sub: 'connections, storage', tone: 'db' },
+    { id: 'app', x: 10, y: 180, w: 150, label: 'App logs', sub: 'CloudWatch agent', tone: 'client' },
+    { id: 'cw', x: 260, y: 95, w: 170, label: 'CloudWatch', sub: 'metrics, logs, dashboards', tone: 'ops' },
+    { id: 'sns', x: 530, y: 40, w: 160, label: 'SNS email', sub: 'tell a human', tone: 'msg' },
+    { id: 'asg', x: 530, y: 150, w: 160, label: 'Auto Scaling', sub: 'add an instance', tone: 'compute' },
+  ]}
+  edges={[
+    { from: 'ec2', to: 'cw', via: 'h' },
+    { from: 'rds', to: 'cw' },
+    { from: 'app', to: 'cw', via: 'h' },
+    { from: 'cw', to: 'sns', label: 'alarm' },
+    { from: 'cw', to: 'asg', label: 'alarm' },
+  ]}
+/>
+
+Amazon CloudWatch collects what your resources are doing and lets you act on it.
+
+- **Metrics**: numbers over time. Many AWS services send them automatically: EC2 CPU, RDS free storage, load balancer request counts. You can publish your own.
+- **Logs**: text output from apps and services, searchable in CloudWatch Logs.
+- **Alarms**: watch a metric against a threshold. When it trips, notify someone (through SNS) or take an action, such as scaling an Auto Scaling group.
+- **Dashboards**: metrics and logs on one screen. CloudWatch builds automatic ones for many services.
+
+## A first alarm worth setting
+
+A billing alarm, or an AWS Budget, so a forgotten instance cannot surprise you. See [Costs and the free plan](/docs/concepts/costs-and-free-plan).
+
+## In the lessons
+
+Open your instance in the EC2 console and choose the **Monitoring** tab: those graphs are CloudWatch metrics.
+
+## Official docs
+
+- [What is Amazon CloudWatch?](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html)
+- [Using Amazon CloudWatch alarms](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html)

@@ -11,7 +11,31 @@ Amazon RDS runs the database engine on servers AWS manages. You pick the engine 
 
 Engines: MySQL, PostgreSQL, MariaDB, Oracle, SQL Server and Db2, plus Aurora MySQL and Aurora PostgreSQL.
 
-Both lessons use RDS for PostgreSQL. [Lesson 1, Part 2](/docs/web-server-and-rds/2-create-rds) creates one by hand. [Lesson 2, Part 2](/docs/app-to-rds/2-create-rds) creates one and connects it to the app's instance in one step.
+<Flow
+  title="RDS Multi-AZ with a read replica"
+  desc="The app writes to the primary RDS instance in Availability Zone A. RDS keeps a standby in Availability Zone B in sync and fails over to it if the primary fails. A read replica, updated asynchronously, takes read-only queries."
+  width={700}
+  height={270}
+  groups={[
+    { x: 200, y: 10, w: 220, h: 250, label: 'Availability Zone A', tone: 'az' },
+    { x: 460, y: 10, w: 220, h: 250, label: 'Availability Zone B', tone: 'az' },
+  ]}
+  nodes={[
+    { id: 'app', x: 10, y: 60, w: 150, label: 'App', sub: 'reads and writes', tone: 'compute' },
+    { id: 'pri', x: 235, y: 60, label: 'Primary', sub: 'RDS PostgreSQL', tone: 'db' },
+    { id: 'sby', x: 495, y: 60, label: 'Standby', sub: 'Multi-AZ, no reads', tone: 'db' },
+    { id: 'rep', x: 235, y: 180, label: 'Read replica', sub: 'read-only copy', tone: 'db' },
+  ]}
+  edges={[
+    { from: 'app', to: 'pri', label: 'SQL' },
+    { from: 'pri', to: 'sby', label: 'sync' },
+    { from: 'pri', to: 'rep', label: 'async', dashed: true },
+  ]}
+/>
+
+## In the lessons
+
+[Lesson 1, Part 2](/docs/web-server-and-rds/2-create-rds) and [Lesson 2, Part 2](/docs/app-to-rds/2-create-rds) each create an RDS for PostgreSQL database. The app connects with an endpoint, a port (5432), a user and a password, over TLS: the app checks Amazon's certificate so nobody in between can read the traffic.
 
 ## Managed or run it yourself on EC2
 
@@ -35,6 +59,14 @@ What you give up: no shell access to the database server, and only the engines a
 
 A Multi-AZ deployment keeps a standby copy in a second Availability Zone, kept in sync. If the primary fails, RDS fails over to the standby automatically. You pay for the standby instance too, so it costs more than Single-AZ. For a club demo, Single-AZ is fine. For anything people depend on, use Multi-AZ.
 
+## Read replicas
+
+A read replica is a read-only copy kept up to date from the primary, asynchronously. Send reads to it to take load off the primary. It is not a failover standby: that is Multi-AZ. See [Horizontal scaling](/docs/architecture/3-scaling/horizontal).
+
+## Passwords
+
+The lessons keep the database password in a `.env` file on the server. The next step up is AWS Secrets Manager: RDS can store and rotate the master password there, and the app reads it with an IAM role instead of a file.
+
 ## Amazon Aurora
 
 Aurora is AWS's own MySQL- and PostgreSQL-compatible engine, run through RDS. The difference is storage: Aurora keeps your data in one cluster volume that is copied across three Availability Zones (six copies) and grows on its own as the data grows. Read replicas share that same storage instead of copying it.
@@ -47,4 +79,7 @@ Choose Aurora when you need more availability or read capacity than a single RDS
 - [Introduction to backups](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html)
 - [Multi-AZ DB instance deployments](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html)
 - [Amazon Aurora storage](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.StorageReliability.html)
+- [Working with read replicas](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html)
+- [Using SSL/TLS to encrypt a connection](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+- [Password management with Secrets Manager](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html)
 - [Amazon RDS features](https://aws.amazon.com/rds/features/)

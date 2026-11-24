@@ -1,0 +1,47 @@
+---
+title: Containers (ECS and Fargate)
+description: Package the app once, run it anywhere. ECS runs the containers; Fargate runs them without servers to manage.
+---
+
+<Flow
+  title="From a container image to running tasks"
+  desc="You build a container image and push it to Amazon ECR, a registry. A task definition says which image to run and how much CPU and memory it gets. An ECS service keeps the desired number of tasks running on Fargate and replaces any that stop. A load balancer sends traffic to the tasks."
+  width={700}
+  height={250}
+  groups={[{ x: 380, y: 10, w: 310, h: 230, label: 'ECS service on Fargate: desired 2', tone: 'vpc' }]}
+  nodes={[
+    { id: 'img', x: 10, y: 20, w: 160, label: 'Container image', sub: 'pushed to ECR', tone: 'storage' },
+    { id: 'td', x: 10, y: 150, w: 160, label: 'Task definition', sub: 'image, CPU, memory', tone: 'client' },
+    { id: 'lb', x: 210, y: 85, w: 130, label: 'ALB', tone: 'net' },
+    { id: 't1', x: 460, y: 50, label: 'Task', sub: 'container', tone: 'compute' },
+    { id: 't2', x: 460, y: 150, label: 'Task', sub: 'container', tone: 'compute' },
+  ]}
+  edges={[
+    { from: 'lb', to: 't1' },
+    { from: 'lb', to: 't2' },
+    { from: 'img', to: 'td', label: 'uses', dashed: true },
+  ]}
+/>
+
+A container packs the app with everything it needs to run, so it behaves the same on your laptop and in AWS. The [Lesson 2 app](https://github.com/aws-seneca/aws-101-workshop) already has a `Dockerfile`.
+
+## Amazon ECS words
+
+- **Image**: the packaged app. Stored in a registry such as Amazon ECR.
+- **Task definition**: the blueprint, in JSON. Which image, how much CPU and memory, ports, environment, logging, and the IAM role.
+- **Task**: one running copy of a task definition.
+- **Service**: keeps a set number of tasks running and replaces any that stop. Can sit behind a load balancer.
+- **Cluster**: the group your tasks and services run in.
+
+## Fargate or EC2
+
+- **AWS Fargate**: serverless compute for containers. You say how much CPU and memory each task needs; AWS runs it. No instances to patch or size.
+- **EC2 capacity**: tasks run on EC2 instances you manage. More control, sometimes cheaper at steady high load.
+
+Start with Fargate. See [Containers on ECS](/docs/architecture/7-containers).
+
+## Official docs
+
+- [What is Amazon ECS?](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html)
+- [Amazon ECS task definitions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html)
+- [AWS Fargate for Amazon ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html)

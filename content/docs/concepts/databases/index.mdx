@@ -1,36 +1,41 @@
 ---
-title: "2. Databases"
-description: Move the data off the server, then pick the kind of database that fits it.
+title: Databases
+description: Relational, NoSQL or a cache. Pick by the shape of the data and how it is read.
 ---
 
-Design 1 kept sign-ups in a file on the server. The fix is to give the data its own home: a database that outlives any one server. AWS runs the database for you, so you choose the kind and the size, not the hardware.
+An app's data needs a home that outlives any one server. On AWS you rarely run that database yourself: you choose the kind and the size, and AWS runs it.
 
-```text
-Browser ──HTTP──> EC2 instance (public subnet)
-                   └─ the app ──SQL, TLS──> database (private subnet)
-```
-
-This is where both lessons end: the app on EC2, the data in Amazon RDS.
+<Flow
+  title="Three kinds of data store, side by side"
+  desc="An app server can talk to three kinds of data store. A relational database, Amazon RDS or Aurora, holds tables queried with SQL. A NoSQL database, Amazon DynamoDB, holds items found by their key. A cache, Amazon ElastiCache, holds copies of frequent reads in memory, in front of the database."
+  width={680}
+  height={250}
+  nodes={[
+    { id: 'app', x: 20, y: 97, label: 'App server', sub: 'EC2, ECS or Lambda', tone: 'compute' },
+    { id: 'rel', x: 470, y: 15, w: 190, label: 'Relational', sub: 'RDS, Aurora: SQL, joins', tone: 'db' },
+    { id: 'nosql', x: 470, y: 97, w: 190, label: 'NoSQL', sub: 'DynamoDB: get by key', tone: 'db' },
+    { id: 'cache', x: 470, y: 179, w: 190, label: 'Cache', sub: 'ElastiCache: in memory', tone: 'db' },
+  ]}
+  edges={[
+    { from: 'app', to: 'rel' },
+    { from: 'app', to: 'nosql' },
+    { from: 'app', to: 'cache' },
+  ]}
+/>
 
 ## Which kind of database
 
 | You have | Reach for | Page |
 |---|---|---|
-| Rows with a fixed shape, joins between tables, SQL | A relational database: Amazon RDS (MySQL, PostgreSQL and others) or Amazon Aurora | [Relational](/docs/architecture/2-databases/relational) |
-| Lookups by a known key, very high traffic, a flexible shape | A NoSQL database: Amazon DynamoDB | [NoSQL](/docs/architecture/2-databases/nosql) |
-| The same reads over and over, and the database is the bottleneck | A cache in front of the database: Amazon ElastiCache | [Caching](/docs/architecture/2-databases/caching) |
+| Rows with a fixed shape, joins between tables, SQL | A relational database: Amazon RDS (MySQL, PostgreSQL and others) or Amazon Aurora | [Relational](/docs/concepts/databases/relational) |
+| Lookups by a known key, very high traffic, a flexible shape | A NoSQL database: Amazon DynamoDB | [NoSQL](/docs/concepts/databases/nosql) |
+| The same reads over and over, and the database is the bottleneck | A cache in front of the database: Amazon ElastiCache | [Caching](/docs/concepts/databases/caching) |
 
-For the sign-up app, a relational database is the natural first choice: the data is a small table with a fixed shape, and SQL is what most people learn first. The other two are worth knowing because the same question comes up in every design review: what shape is the data, and how is it read?
+For the sign-up app in the lessons, relational is the natural first choice: the data is a small table with a fixed shape, and SQL is what most people learn first. The other two matter because every design review asks the same question: what shape is the data, and how is it read?
 
-## What moving the data fixes
+## In the lessons
 
-- **The data outlives the server.** Terminate the instance and the sign-ups are still there.
-- **The app server becomes stateless.** It holds no data of its own, so you can run more than one. That is what makes [3. Scaling](/docs/architecture/3-scaling) possible.
-
-## What is still fragile
-
-- One EC2 instance. If it stops, the site stops.
-- In the lessons, the database password sits in a `.env` file on the server. AWS Secrets Manager with an IAM role is the next step up.
+Both lessons end with the app on EC2 and the data in Amazon RDS for PostgreSQL. [Architecture, 2. Database tier](/docs/architecture/2-database-tier) shows why that move matters.
 
 ## Official docs
 

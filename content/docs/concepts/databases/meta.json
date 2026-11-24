@@ -1,8 +1,4 @@
 {
-  "title": "2. Databases",
-  "pages": [
-    "relational",
-    "nosql",
-    "caching"
-  ]
+  "title": "Databases",
+  "pages": ["relational", "nosql", "caching"]
 }

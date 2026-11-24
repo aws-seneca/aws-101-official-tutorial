@@ -7,6 +7,30 @@ description: "Your private network in AWS, and the firewall rules around each re
 Help write it: see [Contributing](/docs/contributing). Keep it short, link the official docs, and check every fact.
 </Callout>
 
+<Flow
+  title="A VPC with a public and a private subnet, the recommended layout"
+  caption="The recommended layout. The lessons use the default VPC instead, where every subnet is public: there the database is protected by having no public address and a security group that only admits the instance."
+  desc="The VPC is your private network in one Region. The public subnet has a route to an internet gateway, so the EC2 instance in it can be reached from the internet on the ports its security group allows. The private subnet has no route to the internet. The RDS database in it accepts port 5432 only from the instance's security group."
+  width={700}
+  height={270}
+  groups={[
+    { x: 150, y: 10, w: 540, h: 250, label: 'VPC 172.31.0.0/16', tone: 'vpc' },
+    { x: 170, y: 40, w: 250, h: 105, label: 'Public subnet', tone: 'public' },
+    { x: 170, y: 155, w: 250, h: 95, label: 'Private subnet', tone: 'private' },
+  ]}
+  nodes={[
+    { id: 'net', x: 10, y: 70, w: 110, label: 'Internet', tone: 'client' },
+    { id: 'ec2', x: 220, y: 72, label: 'EC2', sub: 'sg: 80 from anywhere', tone: 'compute' },
+    { id: 'db', x: 220, y: 185, label: 'RDS', sub: 'sg: 5432 from EC2 sg', tone: 'db' },
+    { id: 'igw', x: 500, y: 72, w: 170, label: 'Internet gateway', sub: 'route 0.0.0.0/0', tone: 'net' },
+  ]}
+  edges={[
+    { from: 'net', to: 'ec2', label: ':80' },
+    { from: 'ec2', to: 'db', label: ':5432' },
+    { from: 'ec2', to: 'igw', dashed: true },
+  ]}
+/>
+
 ## In the workshop
 
 Part 1 opened port 3000 to your IP. In Part 2, "Connect to an EC2 compute resource" created two security groups so only the instance can reach the database.

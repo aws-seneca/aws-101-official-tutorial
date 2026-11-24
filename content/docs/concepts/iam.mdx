@@ -7,6 +7,26 @@ description: "Who can do what in your AWS account."
 Help write it: see [Contributing](/docs/contributing). Keep it short, link the official docs, and check every fact.
 </Callout>
 
+<Flow
+  title="Users, roles and policies"
+  desc="A person signs in as an IAM user or through IAM Identity Center and gets permissions from policies attached to their group. An EC2 instance gets permissions from an IAM role instead of stored keys. Each policy lists allowed actions on resources, such as reading one S3 bucket."
+  width={700}
+  height={230}
+  nodes={[
+    { id: 'p', x: 10, y: 25, w: 150, label: 'Person', sub: 'signs in with MFA', tone: 'client' },
+    { id: 'g', x: 260, y: 25, w: 160, label: 'IAM group', sub: 'developers', tone: 'sec' },
+    { id: 'i', x: 10, y: 150, w: 150, label: 'EC2 instance', tone: 'compute' },
+    { id: 'r', x: 260, y: 150, w: 160, label: 'IAM role', sub: 'app-server', tone: 'sec' },
+    { id: 'pol', x: 480, y: 87, w: 210, label: 'Policy', sub: 'allow s3:GetObject on one bucket', tone: 'sec' },
+  ]}
+  edges={[
+    { from: 'p', to: 'g', label: 'member of' },
+    { from: 'i', to: 'r', label: 'assumes' },
+    { from: 'g', to: 'pol' },
+    { from: 'r', to: 'pol' },
+  ]}
+/>
+
 ## In the workshop
 
 The workshop kept IAM out of the hands-on to save time. You signed in as your account's user; the app used a database password, not AWS credentials.

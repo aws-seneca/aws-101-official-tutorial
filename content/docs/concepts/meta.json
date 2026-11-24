@@ -1,11 +1,24 @@
 {
   "title": "Concepts",
   "pages": [
-    "ec2",
-    "security-groups-and-vpc",
-    "rds",
+    "---Foundations---",
+    "regions-and-azs",
+    "shared-responsibility",
     "iam",
+    "costs-and-free-plan",
+    "---Compute---",
+    "ec2",
+    "auto-scaling",
+    "containers",
+    "---Networking---",
+    "security-groups-and-vpc",
+    "load-balancing",
+    "route-53",
+    "cloudfront",
+    "---Data---",
+    "databases",
     "s3",
-    "costs-and-free-plan"
+    "---Operations---",
+    "cloudwatch"
   ]
 }

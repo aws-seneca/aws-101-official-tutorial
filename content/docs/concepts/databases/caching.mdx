@@ -7,11 +7,22 @@ A cache keeps copies of data in memory so the app does not ask the database the 
 
 ## The pattern
 
-```text
-app ──1. ask the cache──> ElastiCache
-  │  found? use it. Not found?
-  └─2. ask the database──> RDS ──3. store the answer in the cache
-```
+<Flow
+  title="Cache-aside: check the cache first, then the database"
+  desc="Step 1: the app asks ElastiCache. On a hit it uses the cached answer. Step 2, on a miss: it reads from the RDS database. Step 3: it stores the answer in the cache with an expiry time, so the next read is a hit."
+  width={680}
+  height={230}
+  nodes={[
+    { id: 'app', x: 20, y: 87, label: 'App', tone: 'compute' },
+    { id: 'c', x: 480, y: 10, w: 180, label: 'ElastiCache', sub: 'in memory, fast', tone: 'db' },
+    { id: 'db', x: 480, y: 165, w: 180, label: 'RDS', sub: 'source of truth', tone: 'db' },
+  ]}
+  edges={[
+    { from: 'app', to: 'c', label: '1. get' },
+    { from: 'app', to: 'db', label: '2. on a miss' },
+    { from: 'db', to: 'c', label: '3. store', dashed: true },
+  ]}
+/>
 
 This is called cache-aside, or lazy loading. Give cached items an expiry time so stale answers clear on their own.
 

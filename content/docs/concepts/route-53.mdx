@@ -1,0 +1,48 @@
+---
+title: DNS and Route 53
+description: Turn a name like awsseneca.com into an address, and choose where traffic goes.
+---
+
+<Flow
+  title="How a browser finds your app by name"
+  desc="First the browser asks DNS for app.example.com, and Route 53 answers with the load balancer's address through an alias record. Then the browser connects to the load balancer, which forwards the request to the app."
+  width={700}
+  height={230}
+  nodes={[
+    { id: 'b', x: 10, y: 87, w: 140, label: 'Browser', tone: 'client' },
+    { id: 'r', x: 290, y: 10, w: 180, label: 'Route 53', sub: 'app.example.com', tone: 'edge' },
+    { id: 'lb', x: 290, y: 165, w: 180, label: 'Load balancer', tone: 'net' },
+    { id: 'app', x: 540, y: 165, w: 150, label: 'App', tone: 'compute' },
+  ]}
+  edges={[
+    { from: 'b', to: 'r', label: '1. look up' },
+    { from: 'r', to: 'lb', label: 'alias record', dashed: true },
+    { from: 'b', to: 'lb', label: '2. connect' },
+    { from: 'lb', to: 'app' },
+  ]}
+/>
+
+DNS is the internet's phone book: it turns names into IP addresses. Amazon Route 53 does three jobs:
+
+1. **Registers domain names**, such as `example.com`.
+2. **Answers DNS queries** for the domains you host in it. Each domain is a *hosted zone*, holding *records*.
+3. **Checks health**, so it can stop sending people to an endpoint that is down.
+
+## Records you will use
+
+- **A** record: name to IPv4 address. **AAAA**: to IPv6. **CNAME**: name to another name.
+- **Alias** record: Route 53's own type, pointing a name at an AWS resource such as a load balancer, CloudFront or an S3 website. Works at the top of a domain, where CNAME cannot.
+
+## Routing policies
+
+Simple (one answer), weighted (split traffic by percentage), latency (nearest Region), failover (a backup when the main one is unhealthy), and geolocation (by where the user is), among others.
+
+## In the lessons
+
+The lessons use the instance's raw public IP address. A real app gets a name: an alias record pointing at a load balancer or CloudFront.
+
+## Official docs
+
+- [What is Amazon Route 53?](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/Welcome.html)
+- [Choosing a routing policy](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html)
+- [Choosing between alias and non-alias records](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html)
