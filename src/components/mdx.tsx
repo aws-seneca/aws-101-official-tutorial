@@ -5,6 +5,7 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 import type { MDXComponents } from 'mdx/types';
 import { Screenshot } from '@/components/screenshot';
 import { Architecture } from '@/components/architecture';
+import { Flow } from '@/components/flow';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -17,6 +18,7 @@ export function getMDXComponents(components?: MDXComponents) {
     Accordions,
     Screenshot,
     Architecture,
+    Flow,
     ...components,
   } satisfies MDXComponents;
 }
