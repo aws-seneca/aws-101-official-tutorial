@@ -1,0 +1,73 @@
+---
+title: Horizontal scaling
+description: More instances behind a load balancer, added and replaced automatically. Read replicas for the database.
+---
+
+Horizontal scaling, or scaling out, means running more copies of the app and spreading traffic across them. If one fails, the others keep the site up.
+
+<Flow
+  title="An Application Load Balancer and an Auto Scaling group across two zones"
+  desc="Browsers connect to an Application Load Balancer. It sends requests to EC2 instances in an Auto Scaling group spread across Availability Zones a and b. All instances use one RDS database with a Multi-AZ standby, and a read replica takes read-only queries."
+  width={700}
+  height={300}
+  groups={[
+    { x: 170, y: 10, w: 520, h: 280, label: 'VPC', tone: 'vpc' },
+    { x: 330, y: 40, w: 160, h: 235, label: 'Auto Scaling group', tone: 'az' },
+  ]}
+  nodes={[
+    { id: 'u', x: 10, y: 122, w: 120, label: 'Browsers', tone: 'client' },
+    { id: 'lb', x: 190, y: 122, w: 120, label: 'ALB', tone: 'net' },
+    { id: 'a', x: 345, y: 70, w: 130, label: 'EC2', sub: 'AZ a', tone: 'compute' },
+    { id: 'b', x: 345, y: 180, w: 130, label: 'EC2', sub: 'AZ b', tone: 'compute' },
+    { id: 'db', x: 530, y: 70, w: 145, label: 'RDS primary', sub: 'Multi-AZ', tone: 'db' },
+    { id: 'rr', x: 530, y: 180, w: 145, label: 'Read replica', tone: 'db' },
+  ]}
+  edges={[
+    { from: 'u', to: 'lb' },
+    { from: 'lb', to: 'a' },
+    { from: 'lb', to: 'b' },
+    { from: 'a', to: 'db', label: 'writes' },
+    { from: 'b', to: 'rr', label: 'reads' },
+    { from: 'db', to: 'rr', dashed: true, via: 'v' },
+  ]}
+/>
+
+## The parts
+
+- **Application Load Balancer (ALB).** One address for the whole site. It sends each request to a healthy instance and stops sending to one that fails its health check.
+- **Auto Scaling group.** Keeps a set number of instances running. You give it a minimum, a maximum and a desired count. It replaces instances that fail health checks, and with a scaling policy it adds instances when load goes up and removes them when it drops.
+- **Launch template.** The recipe for each new instance: AMI, instance type, security group, and user data that installs and starts the app. New instances must come up ready with no one logging in.
+- **Two or more Availability Zones.** Spread the instances so one data centre going down does not take the site with it.
+
+## The rule: the app must be stateless
+
+Any instance can get any request, and any instance can be replaced at any time. So nothing that matters can live on one instance's disk or memory:
+
+- **Data** goes in the database. [2. Database tier](/docs/architecture/2-database-tier) is what makes this design possible.
+- **Sessions** go in the database or a cache such as [ElastiCache](/docs/concepts/databases/caching), not in server memory.
+- **Uploaded files** go in Amazon S3, not on the instance.
+
+The Lesson 2 app already passes this test once it uses RDS: the sign-ups live in the database, not on the server.
+
+## The database side: read replicas
+
+The database is often the next bottleneck. An RDS **read replica** is a read-only copy of the database, kept up to date from the primary. Send reads to replicas and writes to the primary.
+
+- Replication is asynchronous, so a replica can lag a little behind. Read from the primary when you need what was just written.
+- Read replicas spread read load. They are not the same as Multi-AZ, which is a standby for failover.
+- Writes still go to one primary. For that, scale the primary vertically, or look at [DynamoDB](/docs/concepts/databases/nosql).
+
+## What it costs
+
+More instances, a load balancer billed by the hour and by use, and more parts to understand. Worth it when the site must stay up or traffic swings. Overkill for a one-evening workshop app.
+
+## Read next
+
+[Load balancing](/docs/concepts/load-balancing), [Auto Scaling](/docs/concepts/auto-scaling), [Regions and Availability Zones](/docs/concepts/regions-and-azs), [Caching](/docs/concepts/databases/caching).
+
+## Official docs
+
+- [What is an Application Load Balancer?](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html)
+- [What is Amazon EC2 Auto Scaling?](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html)
+- [Health checks for instances in an Auto Scaling group](https://docs.aws.amazon.com/autoscaling/ec2/userguide/health-checks-overview.html)
+- [Working with DB instance read replicas](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html)

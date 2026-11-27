@@ -1,0 +1,62 @@
+---
+title: "4. High availability"
+description: Survive a whole Availability Zone failing. Two of everything, in two zones.
+---
+
+<Flow
+  title="Every tier spread across two Availability Zones"
+  desc="Inside one Region, the load balancer runs in Availability Zones a and b. The Auto Scaling group keeps at least one app instance in each zone. Both instances use the RDS primary in zone a, which keeps a synchronous standby in zone b. If zone a fails, the load balancer sends traffic only to zone b, Auto Scaling replaces the lost instance there, and RDS fails over to the standby."
+  width={700}
+  height={350}
+  groups={[
+    { x: 10, y: 10, w: 680, h: 330, label: 'Region: ca-central-1', tone: 'region' },
+    { x: 30, y: 125, w: 310, h: 200, label: 'Availability Zone a', tone: 'az' },
+    { x: 360, y: 125, w: 310, h: 200, label: 'Availability Zone b', tone: 'az' },
+  ]}
+  nodes={[
+    { id: 'lb', x: 255, y: 30, w: 190, label: 'Load balancer', sub: 'in both zones', tone: 'net' },
+    { id: 'a', x: 105, y: 158, w: 160, label: 'EC2', sub: 'Auto Scaling group', tone: 'compute' },
+    { id: 'b', x: 435, y: 158, w: 160, label: 'EC2', sub: 'also uses the primary', tone: 'compute' },
+    { id: 'pa', x: 105, y: 252, w: 160, label: 'RDS primary', tone: 'db' },
+    { id: 'sb', x: 435, y: 252, w: 160, label: 'RDS standby', sub: 'takes over on failure', tone: 'db' },
+  ]}
+  edges={[
+    { from: 'lb', to: 'a', via: 'v' },
+    { from: 'lb', to: 'b', via: 'v' },
+    { from: 'a', to: 'pa' },
+    { from: 'pa', to: 'sb', label: 'sync' },
+  ]}
+/>
+
+High availability means the app keeps running when a part fails. On AWS, the unit of failure to plan for is the Availability Zone: one or more data centres that can lose power or network together. So put at least one copy of every tier in each of two zones.
+
+## What it is
+
+- **Load balancer** across two or more zones. It stops sending traffic to targets that fail health checks.
+- **Auto Scaling group** across the same zones. If a zone goes down, it launches replacements in the healthy one.
+- **RDS Multi-AZ**: a synchronous standby in a second zone, with automatic failover.
+- **Nothing stored on one instance**: the app is stateless, as in [Horizontal scaling](/docs/architecture/3-scaling/horizontal).
+
+## When to use it
+
+Anything people depend on: a club sign-up during an event, a project you show employers, any production app. Not for a one-evening workshop.
+
+## Trade-offs
+
+| | |
+|---|---|
+| Cost | Roughly double the compute and database, plus the load balancer |
+| Complexity | More parts, and failover you should test, not assume |
+| Scaling | Same as horizontal scaling: add instances in each zone |
+
+For surviving a whole Region failing, see the Well-Architected disaster recovery guidance. That is a much bigger step.
+
+## Read next
+
+[Regions and Availability Zones](/docs/concepts/regions-and-azs), [Load balancing](/docs/concepts/load-balancing), [Auto Scaling](/docs/concepts/auto-scaling), [Relational databases](/docs/concepts/databases/relational).
+
+## Official docs
+
+- [Reliability pillar: use fault isolation](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/use-fault-isolation-to-protect-your-workload.html)
+- [Multi-AZ DB instance deployments](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html)
+- [Add Availability Zones to an Auto Scaling group](https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-add-az-console.html)

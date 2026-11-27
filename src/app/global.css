@@ -71,3 +71,102 @@ h3,
   --shiki-dark: #9aa3ad !important; /* 6:1 on #1E2530 */
   --shiki-light: #57606a !important; /* 5.5:1 on the light code background */
 }
+
+/*
+ * Flow diagrams (src/components/flow.tsx). Box outlines follow AWS's service
+ * category colours; text inside boxes uses the page colours, so it keeps the
+ * same contrast as body text. Group labels are coloured text, so each colour
+ * here is at least 4.5:1 on the card background in its mode.
+ */
+.flow {
+  --t-client: #5f6b7a;
+  --t-compute: #c45500;
+  --t-db: #3b48cc;
+  --t-net: #7b2fe0;
+  --t-storage: #3d7a1f;
+  --t-msg: #b8115a;
+  --t-ops: #b42318;
+  --t-edge: #0b6e63;
+  --t-sec: #b0084d;
+}
+.dark .flow {
+  --t-client: #b4b6b9;
+  --t-compute: #ff9900;
+  --t-db: #8c96ff;
+  --t-net: #c39cf0;
+  --t-storage: #7ac74f;
+  --t-msg: #ff6fb1;
+  --t-ops: #ff8a80;
+  --t-edge: #2dd4bf;
+  --t-sec: #ff7a9a;
+}
+.flow svg text {
+  font-family: inherit;
+}
+.flow .f-n rect {
+  fill: color-mix(in srgb, var(--tone) 12%, var(--color-fd-card));
+  stroke: var(--tone);
+  stroke-width: 1.75;
+}
+.flow .f-nl {
+  fill: var(--color-fd-foreground);
+  font-size: 15px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+.flow .f-ns {
+  fill: var(--color-fd-muted-foreground);
+  font-size: 12px;
+  text-anchor: middle;
+}
+.flow .f-n-client { --tone: var(--t-client); }
+.flow .f-n-compute { --tone: var(--t-compute); }
+.flow .f-n-db { --tone: var(--t-db); }
+.flow .f-n-net { --tone: var(--t-net); }
+.flow .f-n-storage { --tone: var(--t-storage); }
+.flow .f-n-msg { --tone: var(--t-msg); }
+.flow .f-n-ops { --tone: var(--t-ops); }
+.flow .f-n-edge { --tone: var(--t-edge); }
+.flow .f-n-sec { --tone: var(--t-sec); }
+
+.flow .f-g rect {
+  fill: color-mix(in srgb, var(--tone) 5%, transparent);
+  stroke: var(--tone);
+  stroke-width: 1.25;
+  stroke-dasharray: 6 4;
+}
+.flow .f-gl {
+  fill: var(--tone);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.flow .f-g-cloud { --tone: var(--t-client); }
+.flow .f-g-region { --tone: var(--t-client); }
+.flow .f-g-az { --tone: var(--t-edge); }
+.flow .f-g-vpc { --tone: var(--t-net); }
+.flow .f-g-public { --tone: var(--t-db); }
+.flow .f-g-private { --tone: var(--t-client); }
+.flow .f-g-vpc rect {
+  stroke-dasharray: none;
+}
+
+.flow .f-line {
+  fill: none;
+  stroke: var(--color-fd-muted-foreground);
+  stroke-width: 1.75;
+}
+.flow .f-dash {
+  stroke-dasharray: 5 4;
+}
+.flow .f-tip {
+  fill: var(--color-fd-muted-foreground);
+}
+.flow .f-lbg {
+  fill: var(--color-fd-card);
+}
+.flow .f-el {
+  fill: var(--color-fd-muted-foreground);
+  font-size: 12px;
+  text-anchor: middle;
+}

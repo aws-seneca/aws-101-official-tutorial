@@ -1,0 +1,63 @@
+---
+title: Vertical scaling
+description: A bigger instance for the app or the database. One setting, a short outage, and a ceiling.
+---
+
+Vertical scaling, or scaling up, means giving the same server more CPU and memory. On AWS that means a bigger EC2 instance type, or a bigger RDS DB instance class.
+
+## The app server (EC2)
+
+1. Stop the instance. You can only change the instance type while it is stopped.
+2. Choose **Actions**, **Instance settings**, **Change instance type**, and pick the new type.
+3. Start the instance.
+
+Things to know:
+
+- **The site is down** from stop to start.
+- **The public IPv4 address changes** when you stop and start, unless you attached an Elastic IP. Your bookmark to the lesson's app will break.
+- The new type must be compatible with the instance's AMI and architecture. You cannot switch between x86 and Arm types this way.
+
+In [Lesson 2](/docs/app-to-rds/1-app-on-ec2) the app runs on `t3.small` because the build needs about 2 GB of memory. That is vertical scaling chosen up front.
+
+## The database (RDS)
+
+1. In the RDS console, select the database and choose **Modify**.
+2. Pick a new **DB instance class**.
+3. Choose **Apply immediately**, or let it wait for the next maintenance window.
+
+Things to know:
+
+- **Changing the instance class causes downtime**, usually a few minutes.
+- With **Multi-AZ**, RDS resizes the standby first, fails over to it, then resizes the old primary. The outage shrinks to the failover.
+- **Storage is separate.** You can raise allocated storage without downtime.
+
+<Flow
+  title="Resizing an RDS database with Multi-AZ"
+  desc="With Multi-AZ, RDS resizes the standby first, then fails over to it, then resizes the old primary. The app only sees the short failover instead of the whole resize."
+  width={680}
+  height={110}
+  nodes={[
+    { id: 's', x: 10, y: 25, w: 190, label: '1. Resize standby', tone: 'db' },
+    { id: 'f', x: 245, y: 25, w: 190, label: '2. Fail over', sub: 'the only outage', tone: 'ops' },
+    { id: 'p', x: 480, y: 25, w: 190, label: '3. Resize old primary', tone: 'db' },
+  ]}
+  edges={[{ from: 's', to: 'f' }, { from: 'f', to: 'p' }]}
+/>
+
+## The limits
+
+- There is a biggest instance. Past that, vertical scaling stops.
+- It is still one server. If it fails, the site is down, however big it is.
+- Big instances cost more per hour, all the time, even at 3 AM when nobody is visiting.
+
+When you hit any of these, go [horizontal](/docs/architecture/3-scaling/horizontal).
+
+## Read next
+
+[EC2](/docs/concepts/ec2), [Relational databases](/docs/concepts/databases/relational), [CloudWatch](/docs/concepts/cloudwatch) (how you know you need a bigger instance).
+
+## Official docs
+
+- [Change the instance type](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-resize.html)
+- [Modifying an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.DBInstance.Modifying.html)
+- [Amazon RDS FAQs: scaling](https://aws.amazon.com/rds/faqs/)

@@ -1,0 +1,66 @@
+---
+title: "3. Scaling"
+description: Two ways to handle more traffic. Make the server bigger, or add more servers.
+---
+
+The app now keeps its data in a database. The next problem is load: one server can only do so much. There are two ways to add capacity.
+
+<Flow
+  title="Vertical scaling: one server, made bigger"
+  desc="A t3.micro instance with 2 vCPUs and 1 GiB of memory is stopped, changed to a t3.large with 2 vCPUs and 8 GiB, and started again. It is still one server."
+  width={680}
+  height={110}
+  nodes={[
+    { id: 'a', x: 20, y: 25, w: 200, label: 't3.micro', sub: '2 vCPU, 1 GiB', tone: 'compute' },
+    { id: 'b', x: 440, y: 15, w: 220, h: 76, label: 't3.large', sub: '2 vCPU, 8 GiB', tone: 'compute' },
+  ]}
+  edges={[{ from: 'a', to: 'b', label: 'stop, resize, start' }]}
+/>
+
+<Flow
+  title="Horizontal scaling: more servers behind a load balancer"
+  desc="Browsers connect to a load balancer, which spreads requests across three EC2 instances. All three use the same database, so any of them can answer any request."
+  width={680}
+  height={250}
+  nodes={[
+    { id: 'u', x: 10, y: 97, w: 120, label: 'Browsers', tone: 'client' },
+    { id: 'lb', x: 175, y: 97, w: 140, label: 'Load balancer', tone: 'net' },
+    { id: 'a', x: 360, y: 15, w: 130, label: 'EC2', tone: 'compute' },
+    { id: 'b', x: 360, y: 97, w: 130, label: 'EC2', tone: 'compute' },
+    { id: 'c', x: 360, y: 179, w: 130, label: 'EC2', tone: 'compute' },
+    { id: 'db', x: 540, y: 97, w: 130, label: 'Database', tone: 'db' },
+  ]}
+  edges={[
+    { from: 'u', to: 'lb' },
+    { from: 'lb', to: 'a' },
+    { from: 'lb', to: 'b' },
+    { from: 'lb', to: 'c' },
+    { from: 'a', to: 'db' },
+    { from: 'b', to: 'db' },
+    { from: 'c', to: 'db' },
+  ]}
+/>
+
+| | [Vertical scaling](/docs/architecture/3-scaling/vertical) | [Horizontal scaling](/docs/architecture/3-scaling/horizontal) |
+|---|---|---|
+| What you do | Change to a bigger instance type or DB instance class | Run more instances and spread traffic across them |
+| Code changes | None | The app must be stateless: no data or sessions on the server |
+| Downtime | A short outage while the instance restarts | None, if done right |
+| Limit | The biggest instance type | Much higher |
+| Survives a server failing | No, there is still one server | Yes, the others keep serving |
+
+## Which one first
+
+Start vertical: it is one setting and no code change, and it buys time. Move to horizontal when you need to survive a server failing, when traffic swings through the day, or when the biggest instance is not enough.
+
+Databases scale both ways too. A bigger DB instance class is vertical. Read replicas, which take read traffic off the primary, are horizontal.
+
+## Read next
+
+[EC2](/docs/concepts/ec2), [Load balancing](/docs/concepts/load-balancing), [Auto Scaling](/docs/concepts/auto-scaling), [Relational databases](/docs/concepts/databases/relational).
+
+## Official docs
+
+- [Change the instance type](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-resize.html)
+- [What is Amazon EC2 Auto Scaling?](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html)
+- [AWS Well-Architected Framework: Reliability pillar](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html)

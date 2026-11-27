@@ -1,0 +1,39 @@
+---
+title: Shared responsibility
+description: AWS secures the cloud. You secure what you put in it. Where the line sits depends on the service.
+---
+
+<Flow
+  title="Who secures what, for three kinds of service"
+  desc="For EC2, AWS secures the hardware, network and facilities, and you secure the guest operating system, its patches, your app and the security group. For RDS, AWS also patches the operating system and the database engine, and you handle database settings, users and data. For S3 and DynamoDB, AWS runs everything below your data, and you control access to the data and protect it."
+  width={700}
+  height={250}
+  nodes={[
+    { id: 'ec2', x: 10, y: 10, w: 220, h: 120, label: 'EC2 (infrastructure)', sub: 'You: OS, patches, app, firewall', tone: 'compute' },
+    { id: 'rds', x: 240, y: 10, w: 220, h: 120, label: 'RDS (platform)', sub: 'You: DB settings, users, data', tone: 'db' },
+    { id: 's3', x: 470, y: 10, w: 220, h: 120, label: 'S3, DynamoDB (abstracted)', sub: 'You: access and your data', tone: 'storage' },
+    { id: 'aws', x: 10, y: 170, w: 680, h: 70, label: 'AWS: hardware, network, data centres, the host and hypervisor', sub: 'security OF the cloud', tone: 'sec' },
+  ]}
+/>
+
+Security and compliance are shared between AWS and you.
+
+- **Security of the cloud** is AWS's job: the hardware, software, networking and facilities that run AWS services.
+- **Security in the cloud** is yours. How much that covers depends on the service.
+
+| Service type | Example | AWS handles | You handle |
+|---|---|---|---|
+| Infrastructure | EC2 | Hardware, network, facilities | The guest OS and its patches, your app, the security group |
+| Platform | RDS | Also the OS and the database engine | Database settings, users, the data |
+| Abstracted | S3, DynamoDB | Everything below your data | Who can access the data, and protecting it |
+
+## In the lessons
+
+You were responsible for: running `dnf update` on the instance, opening only the ports the app needs, and choosing a database password. AWS patched the PostgreSQL engine for you because RDS is a platform service.
+
+You are always responsible for your account: IAM users, MFA, and who has access. See [IAM](/docs/concepts/iam).
+
+## Official docs
+
+- [The shared responsibility model (Well-Architected)](https://docs.aws.amazon.com/wellarchitected/latest/framework/sec-shared-responsibility.html)
+- [Shared responsibility model](https://aws.amazon.com/compliance/shared-responsibility-model/)

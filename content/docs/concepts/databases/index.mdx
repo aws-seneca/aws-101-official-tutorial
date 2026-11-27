@@ -1,0 +1,44 @@
+---
+title: Databases
+description: Relational, NoSQL or a cache. Pick by the shape of the data and how it is read.
+---
+
+An app's data needs a home that outlives any one server. On AWS you rarely run that database yourself: you choose the kind and the size, and AWS runs it.
+
+<Flow
+  title="Three kinds of data store, side by side"
+  desc="An app server can talk to three kinds of data store. A relational database, Amazon RDS or Aurora, holds tables queried with SQL. A NoSQL database, Amazon DynamoDB, holds items found by their key. A cache, Amazon ElastiCache, holds copies of frequent reads in memory, in front of the database."
+  width={680}
+  height={250}
+  nodes={[
+    { id: 'app', x: 20, y: 97, label: 'App server', sub: 'EC2, ECS or Lambda', tone: 'compute' },
+    { id: 'rel', x: 470, y: 15, w: 190, label: 'Relational', sub: 'RDS, Aurora: SQL, joins', tone: 'db' },
+    { id: 'nosql', x: 470, y: 97, w: 190, label: 'NoSQL', sub: 'DynamoDB: get by key', tone: 'db' },
+    { id: 'cache', x: 470, y: 179, w: 190, label: 'Cache', sub: 'ElastiCache: in memory', tone: 'db' },
+  ]}
+  edges={[
+    { from: 'app', to: 'rel' },
+    { from: 'app', to: 'nosql' },
+    { from: 'app', to: 'cache' },
+  ]}
+/>
+
+## Which kind of database
+
+| You have | Reach for | Page |
+|---|---|---|
+| Rows with a fixed shape, joins between tables, SQL | A relational database: Amazon RDS (MySQL, PostgreSQL and others) or Amazon Aurora | [Relational](/docs/concepts/databases/relational) |
+| Lookups by a known key, very high traffic, a flexible shape | A NoSQL database: Amazon DynamoDB | [NoSQL](/docs/concepts/databases/nosql) |
+| The same reads over and over, and the database is the bottleneck | A cache in front of the database: Amazon ElastiCache | [Caching](/docs/concepts/databases/caching) |
+
+For the sign-up app in the lessons, relational is the natural first choice: the data is a small table with a fixed shape, and SQL is what most people learn first. The other two matter because every design review asks the same question: what shape is the data, and how is it read?
+
+## In the lessons
+
+Both lessons end with the app on EC2 and the data in Amazon RDS for PostgreSQL. [Architecture, 2. Database tier](/docs/architecture/2-database-tier) shows why that move matters.
+
+## Official docs
+
+- [What is Amazon RDS?](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html)
+- [What is Amazon DynamoDB?](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html)
+- [What is Amazon ElastiCache?](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html)

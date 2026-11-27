@@ -1,0 +1,43 @@
+---
+title: Regions and Availability Zones
+description: Where AWS runs your resources, and why spreading them across zones keeps an app up.
+---
+
+<Flow
+  title="One Region, three Availability Zones"
+  desc="The Canada (Central) Region, ca-central-1, contains several Availability Zones. Each zone is one or more data centres with its own power, cooling and security, joined to the others by fast private links. An app with one instance in each of two zones keeps running if one zone fails."
+  width={700}
+  height={230}
+  groups={[
+    { x: 10, y: 10, w: 680, h: 210, label: 'Region: ca-central-1 (Canada Central)', tone: 'region' },
+    { x: 30, y: 45, w: 200, h: 155, label: 'AZ a', tone: 'az' },
+    { x: 250, y: 45, w: 200, h: 155, label: 'AZ b', tone: 'az' },
+    { x: 470, y: 45, w: 200, h: 155, label: 'AZ d', tone: 'az' },
+  ]}
+  nodes={[
+    { id: 'a', x: 55, y: 95, label: 'EC2', sub: 'app copy 1', tone: 'compute' },
+    { id: 'b', x: 275, y: 95, label: 'EC2', sub: 'app copy 2', tone: 'compute' },
+    { id: 'd', x: 495, y: 95, label: 'RDS standby', sub: 'Multi-AZ', tone: 'db' },
+  ]}
+  edges={[
+    { from: 'a', to: 'b' },
+  ]}
+/>
+
+- A **Region** is a geographic area where AWS clusters data centres, such as `ca-central-1` in Canada or `us-east-1` in Virginia. Each Region has at least three Availability Zones.
+- An **Availability Zone (AZ)** is one or more data centres with independent power, cooling and physical security. Zones in a Region are physically separate but joined by redundant, very low-latency networks.
+
+## Why it matters
+
+- **Most resources live in one Region.** If you create something in Canada (Central) and then look at the console set to N. Virginia, you will not see it. This is the most common "where did my instance go?" in the lessons.
+- **One zone can fail.** Spread copies across two or more AZs and the app survives. That is what Multi-AZ RDS and an Auto Scaling group across zones do. See [High availability](/docs/architecture/4-high-availability).
+- **Pick a Region near your users**, and one that has the services you need. Prices also differ by Region.
+
+## In the lessons
+
+Both lessons use Canada (Central), `ca-central-1`, and ask you to check the region selector at the top right of the console before you create anything.
+
+## Official docs
+
+- [AWS global infrastructure: Regions and Availability Zones](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/regions.html)
+- [Regions and Zones (EC2)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html)

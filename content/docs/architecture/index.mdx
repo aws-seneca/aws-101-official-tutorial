@@ -1,15 +1,46 @@
 ---
 title: Architecture
-description: One app, four designs, from a single server to serverless.
+description: One app, nine designs. From a single server to serverless, with what each one fixes and costs.
 ---
 
-The workshop app is small, but the question it raises is real: where should the data and the code live as the app grows? These pages follow the same sign-up app through four designs.
+The lessons build a small sign-up app. The question it raises is real: where should the code and the data live as the app grows? These pages follow the same app through nine designs. Each has a diagram, when to use it, its trade-offs, and the concept pages to read.
+
+<Flow
+  title="How the designs build on each other"
+  desc="Single server leads to Database tier, which leads to Scaling, then High availability and the Three-tier web app. Static site, Containers on ECS, Event-driven and Serverless are other directions you can take from there."
+  width={700}
+  height={220}
+  nodes={[
+    { id: 'a', x: 10, y: 20, w: 120, label: '1. Single', sub: 'server', tone: 'compute' },
+    { id: 'b', x: 150, y: 20, w: 120, label: '2. Database', sub: 'tier', tone: 'db' },
+    { id: 'c', x: 290, y: 20, w: 120, label: '3. Scaling', sub: 'up or out', tone: 'net' },
+    { id: 'd', x: 430, y: 20, w: 120, label: '4. High', sub: 'availability', tone: 'edge' },
+    { id: 'e', x: 570, y: 20, w: 120, label: '5. Three-tier', sub: 'web app', tone: 'net' },
+    { id: 'f', x: 20, y: 145, w: 150, label: '6. Static site', tone: 'storage' },
+    { id: 'g', x: 190, y: 145, w: 150, label: '7. Containers', tone: 'compute' },
+    { id: 'h', x: 360, y: 145, w: 150, label: '8. Event-driven', tone: 'msg' },
+    { id: 'i', x: 530, y: 145, w: 150, label: '9. Serverless', tone: 'compute' },
+  ]}
+  edges={[
+    { from: 'a', to: 'b' },
+    { from: 'b', to: 'c' },
+    { from: 'c', to: 'd' },
+    { from: 'd', to: 'e' },
+    { from: 'c', to: 'g', dashed: true, via: 'v' },
+    { from: 'h', to: 'i', dashed: true },
+  ]}
+/>
 
 | Design | Fixes | New problem |
 |---|---|---|
 | [1. Single server](/docs/architecture/1-single-server) | Nothing: the starting point | Data and app die together |
-| [2. Managed database](/docs/architecture/2-managed-database) | Data outlives the server | One server is still a single point of failure |
-| [3. Scaling out](/docs/architecture/3-scaling-out) | Survives a server dying, handles more traffic | More moving parts, higher cost |
-| [4. Serverless](/docs/architecture/4-serverless) | No servers to patch or size | Different programming model |
+| [2. Database tier](/docs/architecture/2-database-tier) | Data outlives the server | One server is still a single point of failure |
+| [3. Scaling](/docs/architecture/3-scaling) | Vertical: a bigger server. Horizontal: more servers | More moving parts, higher cost |
+| [4. High availability](/docs/architecture/4-high-availability) | Survives a whole Availability Zone failing | Roughly double the cost |
+| [5. Three-tier web app](/docs/architecture/5-three-tier) | Each layer locked to the one in front of it | More networking to set up |
+| [6. Static site](/docs/architecture/6-static-site) | No servers for sites that are only files | No server-side code |
+| [7. Containers on ECS](/docs/architecture/7-containers) | Same image everywhere, no instances to manage | Images and task definitions to learn |
+| [8. Event-driven](/docs/architecture/8-event-driven) | Slow steps no longer make users wait | Harder to trace and debug |
+| [9. Serverless](/docs/architecture/9-serverless) | No servers to patch or size; near zero cost when idle | A different programming model |
 
 The [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html) is the vocabulary for comparing them: reliability, security, cost, performance, operations, sustainability.

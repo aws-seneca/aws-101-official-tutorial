@@ -1,0 +1,51 @@
+---
+title: "6. Static site"
+description: HTML, CSS and JavaScript files in S3, served worldwide by CloudFront. No servers at all.
+---
+
+<Flow
+  title="A static site on S3 behind CloudFront"
+  desc="Route 53 points the domain at a CloudFront distribution. CloudFront serves files from edge locations near each visitor over HTTPS and fetches from a private S3 bucket on a cache miss, using origin access control. Deploying means copying the built files to the bucket."
+  width={700}
+  height={230}
+  nodes={[
+    { id: 'u', x: 10, y: 87, w: 120, label: 'Visitor', tone: 'client' },
+    { id: 'r53', x: 180, y: 10, w: 150, label: 'Route 53', sub: 'club.example.com', tone: 'edge' },
+    { id: 'cf', x: 180, y: 140, w: 150, label: 'CloudFront', sub: 'HTTPS, cache', tone: 'edge' },
+    { id: 's3', x: 400, y: 140, w: 150, label: 'S3 bucket', sub: 'private, OAC', tone: 'storage' },
+    { id: 'ci', x: 400, y: 10, w: 150, label: 'Your build', sub: 'npm run build', tone: 'client' },
+  ]}
+  edges={[
+    { from: 'u', to: 'r53', label: '1. DNS' },
+    { from: 'u', to: 'cf', label: '2. GET' },
+    { from: 'cf', to: 's3', label: 'on a miss' },
+    { from: 'ci', to: 's3', label: 'upload', dashed: true },
+  ]}
+/>
+
+When a site is only files, with no server-side code, you do not need a server. Put the files in S3 and put CloudFront in front.
+
+This study guide is a static site: `npm run build` turns it into plain HTML files. It happens to be hosted on GitHub Pages, but S3 and CloudFront is the AWS way to do the same.
+
+## When to use it
+
+Portfolios, documentation, marketing pages, and front ends that call an API (see [Serverless](/docs/architecture/9-serverless)).
+
+## Trade-offs
+
+| | |
+|---|---|
+| Cost | Very low: pay for storage and data transfer |
+| Complexity | Low: no servers, nothing to patch |
+| Scaling | CloudFront handles traffic spikes for you |
+
+No server-side code: anything dynamic (forms, logins, a database) needs an API somewhere else.
+
+## Read next
+
+[S3](/docs/concepts/s3), [CDN with CloudFront](/docs/concepts/cloudfront), [DNS and Route 53](/docs/concepts/route-53).
+
+## Official docs
+
+- [Hosting a static website using Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html)
+- [Restrict access to an Amazon S3 origin](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html)

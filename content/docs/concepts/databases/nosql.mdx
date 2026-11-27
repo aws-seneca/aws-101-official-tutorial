@@ -1,0 +1,59 @@
+---
+title: NoSQL (DynamoDB)
+description: Key-value and document data, found by its key, at any scale. When it fits and when it does not.
+---
+
+A NoSQL database drops some relational features to be faster and easier to scale. Amazon DynamoDB is the AWS one most people meet first. It supports key-value and document data.
+
+## How DynamoDB stores data
+
+- A **table** holds **items**. An item is like a row, but items in the same table do not need the same attributes.
+- Every item has a **primary key**. Either a **partition key** alone, or a partition key plus a **sort key**.
+- DynamoDB hashes the partition key to decide where the item lives. Items with the same partition key are stored together, ordered by the sort key.
+
+For the sign-up app, a table keyed on `email` would work: one item per sign-up, found by email in one read. If the club ran many events, a composite key of event and email (pictured) keeps each event's sign-ups together.
+
+<Flow
+  title="A DynamoDB table with a composite key"
+  desc="A table of club events. The partition key is the event ID, so all sign-ups for one event live together. The sort key is the email address, which orders the sign-ups within that event. A query by event ID returns all of its sign-ups in one read."
+  width={680}
+  height={220}
+  groups={[{ x: 180, y: 10, w: 490, h: 200, label: 'Table: signups', tone: 'cloud' }]}
+  nodes={[
+    { id: 'q', x: 10, y: 82, w: 140, label: 'Query', sub: 'event = aws-101', tone: 'compute' },
+    { id: 'p1', x: 205, y: 45, w: 200, label: 'event: aws-101', sub: 'partition key', tone: 'db' },
+    { id: 'i1', x: 445, y: 40, w: 200, h: 44, label: 'ana@… · name, time', tone: 'storage' },
+    { id: 'i2', x: 445, y: 92, w: 200, h: 44, label: 'ben@… · name, time', tone: 'storage' },
+    { id: 'p2', x: 205, y: 145, w: 200, label: 'event: sys-design', sub: 'partition key', tone: 'db' },
+    { id: 'i3', x: 445, y: 150, w: 200, h: 44, label: 'cat@… · name, time', tone: 'storage' },
+  ]}
+  edges={[
+    { from: 'q', to: 'p1' },
+    { from: 'p1', to: 'i1' },
+    { from: 'p1', to: 'i2' },
+    { from: 'p2', to: 'i3' },
+  ]}
+/>
+
+## What is different from SQL
+
+- **No joins.** You shape the data around the questions you will ask, often copying data into more than one item, instead of joining tables at query time.
+- **Design the keys first.** Fast reads come from knowing the key. Searching on other attributes needs an index or a full scan.
+- **No servers.** There is nothing to size, patch or upgrade, and no maintenance window. In on-demand mode you pay per request, and an idle table costs nothing for throughput.
+
+## When it fits
+
+- You always look data up by a known key: a user ID, a session, a cart.
+- Traffic is high or spiky, and you want it to scale without planning.
+- It pairs with AWS Lambda in [4. Serverless](/docs/architecture/9-serverless).
+
+## When it does not
+
+- You need ad hoc queries, reports or joins across many tables. Use a relational database.
+- You do not know yet how the data will be read. Start relational; move a hot path to DynamoDB later if you need to.
+
+## Official docs
+
+- [What is Amazon DynamoDB?](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html)
+- [Core components of DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html)
+- [Choosing the right DynamoDB partition key](https://aws.amazon.com/blogs/database/choosing-the-right-dynamodb-partition-key/)
