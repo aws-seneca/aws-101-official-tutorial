@@ -10,7 +10,7 @@ AWS's version of this part: [Create an Amazon RDS DB instance](https://docs.aws.
 <Steps>
 <Step>
 
-### Open the RDS console, same region
+## Open the RDS console, same region
 
 Canada (Central) again. Databases in the left nav, then Create database, then Standard create.
 
@@ -21,7 +21,7 @@ Canada (Central) again. Databases in the left nav, then Create database, then St
 </Step>
 <Step>
 
-### Engine and template
+## Engine and template
 
 | Field | Value | Note |
 |---|---|---|
@@ -34,7 +34,7 @@ Canada (Central) again. Databases in the left nav, then Create database, then St
 </Step>
 <Step>
 
-### Settings
+## Settings
 
 Type these exactly. The sample page has the username and the database name hard-coded.
 
@@ -50,7 +50,7 @@ Type these exactly. The sample page has the username and the database name hard-
 </Step>
 <Step>
 
-### Instance configuration and storage
+## Instance configuration and storage
 
 | Field | Value | Note |
 |---|---|---|
@@ -62,7 +62,7 @@ Type these exactly. The sample page has the username and the database name hard-
 </Step>
 <Step>
 
-### Connectivity: this is the step that matters
+## Connectivity: this is the step that matters
 
 This is where the database gets a security group rule that lets your server in, and nothing else. Skip it and the sample page will never connect.
 
@@ -77,7 +77,7 @@ This is where the database gets a security group rule that lets your server in, 
 </Step>
 <Step>
 
-### Open Additional configuration and set the database name
+## Open Additional configuration and set the database name
 
 It is collapsed, near the bottom, and easy to miss.
 
@@ -88,14 +88,14 @@ It is collapsed, near the bottom, and easy to miss.
 </Step>
 <Step>
 
-### Choose Create database, then start Part 3 while it builds
+## Choose Create database, then start Part 3 while it builds
 
 Status goes Creating for several minutes. You do not need it yet. Go to Part 3 and come back at the dbinfo.inc step.
 
 </Step>
 <Step>
 
-### When Status is Available, copy the endpoint
+## When Status is Available, copy the endpoint
 
 Choose the database name, then Connectivity & security. The endpoint looks like tutorial-db-instance.abc123.ca-central-1.rds.amazonaws.com. Copy it without the :5432 port.
 

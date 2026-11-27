@@ -1,0 +1,42 @@
+---
+title: CDN with CloudFront
+description: Serve files from a location near each visitor, and keep the origin private.
+---
+
+<Flow
+  title="CloudFront caching an S3 website"
+  desc="Visitors in Toronto and Mumbai each connect to a nearby CloudFront edge location. If the edge has the file cached, it answers at once. If not, it fetches the file from the S3 bucket, the origin, once, and caches it. The bucket blocks public access and only lets CloudFront read it, through origin access control."
+  width={700}
+  height={230}
+  nodes={[
+    { id: 'v1', x: 10, y: 30, w: 140, label: 'Visitor', sub: 'Toronto', tone: 'client' },
+    { id: 'v2', x: 10, y: 150, w: 140, label: 'Visitor', sub: 'Mumbai', tone: 'client' },
+    { id: 'e1', x: 250, y: 30, w: 160, label: 'Edge location', sub: 'cache', tone: 'edge' },
+    { id: 'e2', x: 250, y: 150, w: 160, label: 'Edge location', sub: 'cache', tone: 'edge' },
+    { id: 's3', x: 530, y: 90, w: 160, label: 'S3 bucket', sub: 'origin, private', tone: 'storage' },
+  ]}
+  edges={[
+    { from: 'v1', to: 'e1', label: 'HTTPS' },
+    { from: 'v2', to: 'e2', label: 'HTTPS' },
+    { from: 'e1', to: 's3', label: 'on a miss' },
+    { from: 'e2', to: 's3' },
+  ]}
+/>
+
+A content delivery network (CDN) keeps copies of your files in many places around the world, so each visitor downloads from somewhere close. Amazon CloudFront is AWS's CDN.
+
+- **Origin**: where the real files live. Often an S3 bucket, or a load balancer for a dynamic app.
+- **Edge location**: a CloudFront site near users. It caches what it serves.
+- **Distribution**: your CloudFront setup, with its own domain name and HTTPS certificate.
+- **Origin access control (OAC)**: lets CloudFront read a private S3 bucket. Turn on "Block all public access" on the bucket and the files are reachable only through CloudFront.
+
+## When to use it
+
+- Any public website or static assets: pages load faster and the origin sees less traffic.
+- Serving an S3 site over HTTPS on your own domain.
+- See [Static site](/docs/architecture/6-static-site).
+
+## Official docs
+
+- [What is Amazon CloudFront?](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html)
+- [Restrict access to an Amazon S3 origin](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html)

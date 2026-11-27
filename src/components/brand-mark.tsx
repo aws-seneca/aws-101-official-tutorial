@@ -8,9 +8,9 @@ const CHIP = [
 
 export function BrandMark({ className = 'size-5' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 9 9" className={`shrink-0 ${className}`} aria-hidden shapeRendering="crispEdges">
+    <svg viewBox="0 0 9 9" className={`shrink-0 text-brand ${className}`} aria-hidden shapeRendering="crispEdges">
       {CHIP.map(([x, y, w, h]) => (
-        <rect key={`${x}-${y}`} x={x} y={y} width={w} height={h} fill="#AD5DFE" />
+        <rect key={`${x}-${y}`} x={x} y={y} width={w} height={h} fill="currentColor" />
       ))}
     </svg>
   );

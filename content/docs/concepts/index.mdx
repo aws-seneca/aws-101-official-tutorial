@@ -1,15 +1,45 @@
 ---
 title: Concepts
-description: Study notes on each service the workshop touches.
+description: Short study notes on the AWS services behind the lessons and the architectures, one service per page.
 ---
 
-Each page explains one service: what it is, how the workshop used it, and what to learn next. Pages are outlines for now; club members are writing them.
+Each page explains one idea: what it is, a diagram, how the lessons use it, and the official docs to read next. They follow the order of the AWS Certified Cloud Practitioner basics.
+
+## Foundations
 
 <Cards>
-  <Card title="EC2" href="/docs/concepts/ec2" />
-  <Card title="Security groups and VPC" href="/docs/concepts/security-groups-and-vpc" />
-  <Card title="RDS" href="/docs/concepts/rds" />
-  <Card title="IAM" href="/docs/concepts/iam" />
-  <Card title="S3" href="/docs/concepts/s3" />
-  <Card title="Costs and the free plan" href="/docs/concepts/costs-and-free-plan" />
+  <Card title="Regions and Availability Zones" href="/docs/concepts/regions-and-azs" description="Where AWS runs things, and why zones keep apps up." />
+  <Card title="Shared responsibility" href="/docs/concepts/shared-responsibility" description="What AWS secures, and what you do." />
+  <Card title="IAM" href="/docs/concepts/iam" description="Who can do what in your account." />
+  <Card title="Costs and the free plan" href="/docs/concepts/costs-and-free-plan" description="How to never get a surprise bill." />
+</Cards>
+
+## Compute
+
+<Cards>
+  <Card title="EC2" href="/docs/concepts/ec2" description="Virtual servers you rent by the second." />
+  <Card title="Auto Scaling" href="/docs/concepts/auto-scaling" description="The right number of instances, replaced when they fail." />
+  <Card title="Containers (ECS and Fargate)" href="/docs/concepts/containers" description="Package the app once, run it without servers." />
+</Cards>
+
+## Networking
+
+<Cards>
+  <Card title="Security groups and VPC" href="/docs/concepts/security-groups-and-vpc" description="Your private network and its firewall rules." />
+  <Card title="Load balancing" href="/docs/concepts/load-balancing" description="One address in front of many servers." />
+  <Card title="DNS and Route 53" href="/docs/concepts/route-53" description="Names to addresses, and where traffic goes." />
+  <Card title="CDN with CloudFront" href="/docs/concepts/cloudfront" description="Serve files from near each visitor." />
+</Cards>
+
+## Data
+
+<Cards>
+  <Card title="Databases" href="/docs/concepts/databases" description="Relational, NoSQL or a cache, and when to use which." />
+  <Card title="S3" href="/docs/concepts/s3" description="Object storage for files of any size." />
+</Cards>
+
+## Operations
+
+<Cards>
+  <Card title="Monitoring with CloudWatch" href="/docs/concepts/cloudwatch" description="Metrics, logs and alarms." />
 </Cards>

@@ -1,0 +1,61 @@
+---
+title: "5. Three-tier web app"
+description: Presentation, application and data, each in its own layer with its own network rules.
+---
+
+<Flow
+  title="A three-tier web app in a VPC"
+  desc="Tier one, presentation: the browser and a public load balancer in public subnets. Tier two, application: app instances in private subnets, reachable only from the load balancer. Tier three, data: the database in private subnets, reachable only from the app tier. Each tier's security group admits only the tier in front of it."
+  width={700}
+  height={300}
+  groups={[
+    { x: 160, y: 10, w: 530, h: 280, label: 'VPC', tone: 'vpc' },
+    { x: 180, y: 40, w: 150, h: 230, label: 'Public subnets', tone: 'public' },
+    { x: 350, y: 40, w: 150, h: 230, label: 'Private: app', tone: 'private' },
+    { x: 520, y: 40, w: 150, h: 230, label: 'Private: data', tone: 'private' },
+  ]}
+  nodes={[
+    { id: 'u', x: 10, y: 122, w: 120, label: 'Browser', sub: 'tier 1', tone: 'client' },
+    { id: 'lb', x: 195, y: 122, w: 120, label: 'ALB', sub: 'sg: 443 any', tone: 'net' },
+    { id: 'a1', x: 365, y: 80, w: 120, label: 'App', sub: 'sg: from ALB', tone: 'compute' },
+    { id: 'a2', x: 365, y: 170, w: 120, label: 'App', sub: 'tier 2', tone: 'compute' },
+    { id: 'db', x: 535, y: 122, w: 120, label: 'Database', sub: 'sg: from app', tone: 'db' },
+  ]}
+  edges={[
+    { from: 'u', to: 'lb', label: 'HTTPS' },
+    { from: 'lb', to: 'a1' },
+    { from: 'lb', to: 'a2' },
+    { from: 'a1', to: 'db' },
+    { from: 'a2', to: 'db' },
+  ]}
+/>
+
+The classic layout for a web app. Each tier has one job, and each can only be reached from the tier in front of it.
+
+1. **Presentation**: what the user sees. The browser, plus a load balancer (or CloudFront) as the only public entry point.
+2. **Application**: the code that does the work. Instances or containers in private subnets with no public addresses.
+3. **Data**: the database, in private subnets, reachable only from the application tier.
+
+The security groups chain: the load balancer allows 443 from anywhere; the app allows its port only from the load balancer's security group; the database allows 5432 only from the app's security group.
+
+## When to use it
+
+Most web apps with a database. It is the shape behind [High availability](/docs/architecture/4-high-availability); this page is about the layers and the network rules.
+
+## Trade-offs
+
+| | |
+|---|---|
+| Cost | Private subnets need a NAT gateway for the app to reach the internet (updates, APIs), which bills by the hour |
+| Complexity | More subnets, route tables and security groups |
+| Scaling | Each tier scales on its own |
+
+## Read next
+
+[Security groups and VPC](/docs/concepts/security-groups-and-vpc), [Load balancing](/docs/concepts/load-balancing), [Databases](/docs/concepts/databases).
+
+## Official docs
+
+- [Subnets for your VPC](https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html)
+- [NAT gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html)
+- [Security groups](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html)

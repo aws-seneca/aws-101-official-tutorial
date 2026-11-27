@@ -7,6 +7,22 @@ description: "Object storage for files of any size."
 Help write it: see [Contributing](/docs/contributing). Keep it short, link the official docs, and check every fact.
 </Callout>
 
+<Flow
+  title="Buckets, objects and keys"
+  desc="An S3 bucket holds objects. Each object is a file plus metadata, found by its key, which looks like a path such as exports/2026-10-28.csv. The app writes and reads objects through the S3 API. Block public access keeps the bucket private unless you open it on purpose."
+  width={700}
+  height={200}
+  groups={[{ x: 250, y: 10, w: 440, h: 180, label: 'Bucket: aws-seneca-exports (private)', tone: 'cloud' }]}
+  nodes={[
+    { id: 'app', x: 10, y: 72, w: 160, label: 'App', sub: 'PutObject, GetObject', tone: 'compute' },
+    { id: 'o1', x: 280, y: 45, w: 380, h: 44, label: 'exports/2026-10-28.csv', tone: 'storage' },
+    { id: 'o2', x: 280, y: 110, w: 380, h: 44, label: 'images/banner.png', tone: 'storage' },
+  ]}
+  edges={[
+    { from: 'app', to: 'o1', label: 'key' },
+  ]}
+/>
+
 ## In the workshop
 
 The workshop did not use S3. It is here because it comes up everywhere else: static websites, backups, and app uploads.

@@ -6,7 +6,7 @@ description: One line of configuration moves the data from the server's disk to 
 <Steps>
 <Step>
 
-### Add the connection string
+## Add the connection string
 
 In the EC2 terminal, stop the app with `Ctrl+C`, then write one line with your password and endpoint:
 
@@ -20,14 +20,14 @@ No rebuild needed: the app reads `.env` when it starts.
 </Step>
 <Step>
 
-### Check the label
+## Check the label
 
 Reload `/admin`. The label now says **RDS PostgreSQL**, and the list is empty because this is a new database. Add a few sign-ups.
 
 </Step>
 <Step>
 
-### Prove the data lives elsewhere
+## Prove the data lives elsewhere
 
 ```bash
 rm signups.json

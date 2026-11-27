@@ -1,0 +1,45 @@
+---
+title: Load balancing (ELB)
+description: One address in front of many servers. It sends each request to a healthy one.
+---
+
+<Flow
+  title="An Application Load Balancer in front of two instances"
+  desc="Browsers connect to one Application Load Balancer over HTTPS. The load balancer runs health checks against two EC2 instances in different Availability Zones and sends each request to a healthy one. An instance that fails its health check gets no traffic."
+  width={700}
+  height={230}
+  groups={[{ x: 410, y: 10, w: 280, h: 210, label: 'Target group (health checked)', tone: 'vpc' }]}
+  nodes={[
+    { id: 'u', x: 10, y: 87, w: 130, label: 'Browsers', tone: 'client' },
+    { id: 'lb', x: 200, y: 87, w: 160, label: 'Load balancer', sub: 'ALB, HTTPS :443', tone: 'net' },
+    { id: 'a', x: 470, y: 50, label: 'EC2, AZ a', sub: 'healthy', tone: 'compute' },
+    { id: 'b', x: 470, y: 140, label: 'EC2, AZ b', sub: 'healthy', tone: 'compute' },
+  ]}
+  edges={[
+    { from: 'u', to: 'lb' },
+    { from: 'lb', to: 'a' },
+    { from: 'lb', to: 'b' },
+  ]}
+/>
+
+Elastic Load Balancing (ELB) spreads incoming traffic across targets: EC2 instances, containers, IP addresses or Lambda functions. It checks each target's health and only sends traffic to healthy ones.
+
+## Three kinds
+
+| | Application (ALB) | Network (NLB) | Gateway (GWLB) |
+|---|---|---|---|
+| Works at | Layer 7: HTTP, HTTPS, gRPC | Layer 4: TCP, UDP, TLS | Layer 3: IP packets |
+| Use it for | Websites and APIs. Routes by path or host name | Very high throughput, static IPs, non-HTTP traffic | Passing traffic through firewall appliances |
+
+For a web app, use an ALB.
+
+## Words you will see
+
+- **Listener**: the port and protocol the load balancer accepts, such as HTTPS on 443.
+- **Target group**: the set of targets it forwards to, with a health check (for example, `GET /` must return 200).
+- **Cross-zone**: the load balancer itself runs in every AZ you choose, so it is not a single point of failure.
+
+## Official docs
+
+- [What is an Application Load Balancer?](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html)
+- [Application, Network and Gateway Load Balancing compared](https://aws.amazon.com/compare/the-difference-between-the-difference-between-application-network-and-gateway-load-balancing/)

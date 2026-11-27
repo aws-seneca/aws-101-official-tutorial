@@ -1,0 +1,42 @@
+---
+title: Auto Scaling
+description: Keep the right number of instances running. Replace broken ones, add more under load.
+---
+
+<Flow
+  title="An Auto Scaling group following a CPU target"
+  desc="CloudWatch reports the group's average CPU at 72 percent. The scaling policy targets 50 percent, so Auto Scaling launches a new instance from the launch template. When CPU falls, it removes one. The group never goes below its minimum of 2 or above its maximum of 6."
+  width={700}
+  height={270}
+  groups={[{ x: 440, y: 10, w: 250, h: 250, label: 'Group: min 2, max 6', tone: 'vpc' }]}
+  nodes={[
+    { id: 'cw', x: 10, y: 30, w: 170, label: 'CloudWatch', sub: 'average CPU 72%', tone: 'ops' },
+    { id: 'lt', x: 10, y: 180, w: 170, label: 'Launch template', sub: 'AMI, type, user data', tone: 'client' },
+    { id: 'pol', x: 230, y: 105, w: 160, label: 'Scaling policy', sub: 'target: 50% CPU', tone: 'compute' },
+    { id: 'i1', x: 490, y: 40, label: 'EC2', tone: 'compute' },
+    { id: 'i2', x: 490, y: 115, label: 'EC2', tone: 'compute' },
+    { id: 'i3', x: 490, y: 190, label: 'EC2', sub: 'new', tone: 'compute' },
+  ]}
+  edges={[
+    { from: 'cw', to: 'pol' },
+    { from: 'lt', to: 'pol', dashed: true },
+    { from: 'pol', to: 'i3', label: 'launch' },
+  ]}
+/>
+
+Amazon EC2 Auto Scaling manages a group of instances for you.
+
+- **Minimum, desired and maximum**: the group keeps the desired number running, and never goes outside min and max.
+- **Health checks**: an instance that stops, or fails the load balancer's health check, is replaced automatically.
+- **Launch template**: the recipe for a new instance. AMI, instance type, security group and user data that installs and starts the app. Nobody logs in to set it up.
+- **Scaling policy**: changes the desired count. A *target tracking* policy works like a thermostat: pick a metric and a target, such as average CPU at 50 percent, and the group adds or removes instances to stay near it.
+
+## When to use it
+
+Whenever more than one copy of an app runs on EC2. Even with a fixed size (min = max = 2), it replaces instances that die. Pair it with a [load balancer](/docs/concepts/load-balancing). See [Horizontal scaling](/docs/architecture/3-scaling/horizontal).
+
+## Official docs
+
+- [What is Amazon EC2 Auto Scaling?](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html)
+- [Target tracking scaling policies](https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-target-tracking.html)
+- [Health checks for instances in an Auto Scaling group](https://docs.aws.amazon.com/autoscaling/ec2/userguide/health-checks-overview.html)

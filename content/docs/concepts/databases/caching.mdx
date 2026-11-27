@@ -1,0 +1,45 @@
+---
+title: Caching (ElastiCache)
+description: Keep the answers to common reads in memory, in front of the database.
+---
+
+A cache keeps copies of data in memory so the app does not ask the database the same question again and again. Amazon ElastiCache is the managed cache on AWS. It runs Valkey, Redis OSS or Memcached.
+
+## The pattern
+
+<Flow
+  title="Cache-aside: check the cache first, then the database"
+  desc="Step 1: the app asks ElastiCache. On a hit it uses the cached answer. Step 2, on a miss: it reads from the RDS database. Step 3: it stores the answer in the cache with an expiry time, so the next read is a hit."
+  width={680}
+  height={230}
+  nodes={[
+    { id: 'app', x: 20, y: 87, label: 'App', tone: 'compute' },
+    { id: 'c', x: 480, y: 10, w: 180, label: 'ElastiCache', sub: 'in memory, fast', tone: 'db' },
+    { id: 'db', x: 480, y: 165, w: 180, label: 'RDS', sub: 'source of truth', tone: 'db' },
+  ]}
+  edges={[
+    { from: 'app', to: 'c', label: '1. get' },
+    { from: 'app', to: 'db', label: '2. on a miss' },
+    { from: 'db', to: 'c', label: '3. store', dashed: true },
+  ]}
+/>
+
+This is called cache-aside, or lazy loading. Give cached items an expiry time so stale answers clear on their own.
+
+## When it helps
+
+- The same reads happen far more often than writes: a product page, a leaderboard, a count of sign-ups.
+- The database is the bottleneck and you want to take load off it before you resize it.
+- Sessions for a [horizontally scaled](/docs/architecture/3-scaling/horizontal) app: put them in the cache so any server can handle any request.
+
+## When it does not
+
+- The data changes on almost every read, or every read must be the latest value.
+- The app is small and the database is not under load. A cache is one more thing to run.
+
+ElastiCache Serverless sets up a cache without choosing node sizes and scales it for you. Check current pricing before you create one, and delete it when you finish.
+
+## Official docs
+
+- [What is Amazon ElastiCache?](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html)
+- [Caching strategies](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Strategies.html)

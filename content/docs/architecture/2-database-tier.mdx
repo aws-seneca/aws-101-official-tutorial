@@ -1,0 +1,57 @@
+---
+title: "2. Database tier"
+description: The app stays on EC2; the data moves to a managed database. Where both lessons end.
+---
+
+<Flow
+  title="App on EC2, data in RDS"
+  desc="A browser connects over HTTP to the app on an EC2 instance. The app talks to an Amazon RDS PostgreSQL database over TLS on port 5432. The database has no public address, and its security group only admits the instance's security group."
+  width={680}
+  height={210}
+  groups={[
+    { x: 200, y: 10, w: 470, h: 190, label: 'VPC', tone: 'vpc' },
+  ]}
+  nodes={[
+    { id: 'b', x: 10, y: 77, w: 140, label: 'Browser', tone: 'client' },
+    { id: 'app', x: 230, y: 77, label: 'EC2', sub: 'the app, stateless', tone: 'compute' },
+    { id: 'db', x: 490, y: 77, w: 160, label: 'RDS PostgreSQL', sub: 'no public address', tone: 'db' },
+  ]}
+  edges={[
+    { from: 'b', to: 'app', label: 'HTTP' },
+    { from: 'app', to: 'db', label: 'TLS :5432' },
+  ]}
+/>
+
+The data gets its own home: a database that outlives any one server. This is where [Lesson 1](/docs/web-server-and-rds) and [Lesson 2](/docs/app-to-rds) both end.
+
+## What it fixes
+
+- **The data outlives the server.** Terminate the instance and the sign-ups are still there.
+- **The app server becomes stateless.** It holds no data of its own, so you can run more than one copy. That is what makes [3. Scaling](/docs/architecture/3-scaling) possible.
+- **Backups and patching are AWS's job.** RDS takes automated backups and patches the engine.
+
+## Which database
+
+Relational (RDS or Aurora) for data with a fixed shape and SQL; NoSQL (DynamoDB) for lookups by key at any scale; a cache (ElastiCache) in front when reads repeat. See [Databases](/docs/concepts/databases).
+
+## Trade-offs
+
+| | |
+|---|---|
+| Cost | Adds an RDS instance, billed by the hour while it exists |
+| Complexity | One more resource, a connection string, a password to keep safe |
+| Scaling | The database can grow on its own; the app is still one server |
+
+## What is still fragile
+
+- One EC2 instance. If it stops, the site stops.
+- The database password sits in a `.env` file on the server. AWS Secrets Manager with an IAM role is the next step.
+
+## Read next
+
+[Databases](/docs/concepts/databases), [Relational (RDS and Aurora)](/docs/concepts/databases/relational), [Security groups and VPC](/docs/concepts/security-groups-and-vpc).
+
+## Official docs
+
+- [Tutorial: Create a web server and an Amazon RDS DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html)
+- [What is Amazon RDS?](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html)

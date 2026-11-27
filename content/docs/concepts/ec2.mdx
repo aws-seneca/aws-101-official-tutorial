@@ -7,6 +7,27 @@ description: "Virtual servers you rent by the second."
 Help write it: see [Contributing](/docs/contributing). Keep it short, link the official docs, and check every fact.
 </Callout>
 
+<Flow
+  title="What makes up an EC2 instance"
+  desc="An EC2 instance is launched from an AMI, the disk image with the operating system. The instance type sets its CPU and memory. An EBS volume is its disk. It sits in a subnet with a security group around it, and gets a public IP address that changes when you stop and start it."
+  width={700}
+  height={230}
+  groups={[{ x: 230, y: 10, w: 240, h: 210, label: 'Security group', tone: 'vpc' }]}
+  nodes={[
+    { id: 'ami', x: 10, y: 30, w: 170, label: 'AMI', sub: 'Amazon Linux 2023', tone: 'storage' },
+    { id: 'type', x: 10, y: 140, w: 170, label: 'Instance type', sub: 't3.small: 2 vCPU, 2 GiB', tone: 'client' },
+    { id: 'i', x: 265, y: 85, w: 170, label: 'EC2 instance', sub: 'your server', tone: 'compute' },
+    { id: 'ebs', x: 520, y: 30, w: 170, label: 'EBS volume', sub: 'its disk', tone: 'storage' },
+    { id: 'ip', x: 520, y: 140, w: 170, label: 'Public IPv4', sub: 'changes on stop/start', tone: 'net' },
+  ]}
+  edges={[
+    { from: 'ami', to: 'i', label: 'launch from' },
+    { from: 'type', to: 'i', label: 'size' },
+    { from: 'i', to: 'ebs' },
+    { from: 'i', to: 'ip' },
+  ]}
+/>
+
 ## In the workshop
 
 Part 1 launched a `t3.small` instance running Amazon Linux 2023, then installed and ran the app on it.

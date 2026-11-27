@@ -1,0 +1,63 @@
+---
+title: "8. Event-driven"
+description: Parts of the app talk through queues and events, so a slow or broken part does not stop the rest.
+---
+
+<Flow
+  title="A sign-up event fanned out to queues"
+  desc="When someone signs up, the app publishes one message to an SNS topic and returns at once. SNS delivers a copy to two SQS queues. A Lambda function reads the email queue and sends a welcome email. Another reads the stats queue and updates a count. If the email step is slow or fails, messages wait in its queue and the sign-up still succeeds."
+  width={700}
+  height={250}
+  nodes={[
+    { id: 'app', x: 10, y: 97, w: 130, label: 'App', sub: 'new sign-up', tone: 'compute' },
+    { id: 'sns', x: 185, y: 97, w: 130, label: 'SNS topic', sub: 'signup-created', tone: 'msg' },
+    { id: 'q1', x: 365, y: 30, w: 140, label: 'SQS queue', sub: 'emails', tone: 'msg' },
+    { id: 'q2', x: 365, y: 165, w: 140, label: 'SQS queue', sub: 'stats', tone: 'msg' },
+    { id: 'l1', x: 550, y: 30, w: 140, label: 'Lambda', sub: 'send welcome', tone: 'compute' },
+    { id: 'l2', x: 550, y: 165, w: 140, label: 'Lambda', sub: 'update count', tone: 'compute' },
+  ]}
+  edges={[
+    { from: 'app', to: 'sns', label: 'publish' },
+    { from: 'sns', to: 'q1' },
+    { from: 'sns', to: 'q2' },
+    { from: 'q1', to: 'l1', label: 'poll' },
+    { from: 'q2', to: 'l2', label: 'poll' },
+  ]}
+/>
+
+In the earlier designs, every step happens inside one request: the user waits while the app saves, emails and counts. In an event-driven design, the app records what happened and returns. Other parts react in their own time.
+
+## The three AWS building blocks
+
+| | Amazon SQS | Amazon SNS | Amazon EventBridge |
+|---|---|---|---|
+| Model | Queue: consumers pull messages | Pub/sub: pushes to every subscriber | Event bus: rules match events and route them |
+| Keeps messages | Yes, until processed (up to 14 days) | No, delivers in real time | No, retries delivery for up to 24 hours |
+| Use it for | Buffering work, smoothing spikes | One event, many receivers | Routing events between services and SaaS apps |
+
+They combine: SNS to fan out, SQS to buffer each receiver, as in the diagram.
+
+## When to use it
+
+- A slow step (emails, image processing, reports) should not make the user wait.
+- One event, several things to do.
+- Traffic spikes: the queue absorbs them and workers catch up.
+
+## Trade-offs
+
+| | |
+|---|---|
+| Cost | Pay per message; very low at club scale |
+| Complexity | Harder to follow and debug: work happens later, somewhere else |
+| Scaling | Each consumer scales on its own |
+
+Messages can arrive more than once, so each consumer must cope with duplicates.
+
+## Read next
+
+[CloudWatch](/docs/concepts/cloudwatch) (watch queue depth), [Serverless](/docs/architecture/9-serverless).
+
+## Official docs
+
+- [Amazon SQS, Amazon SNS, or Amazon EventBridge?](https://docs.aws.amazon.com/decision-guides/latest/decision-guides/sns-or-sqs-or-eventbridge.html)
+- [Fanout to Amazon SQS queues](https://docs.aws.amazon.com/sns/latest/dg/sns-sqs-as-subscriber.html)
